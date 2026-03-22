@@ -1,7 +1,11 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onAddClick?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onAddClick }) => {
   return (
     <header className="header">
       <div className="logo">
@@ -9,7 +13,7 @@ export const Header: React.FC = () => {
         <span>JobTrackr Pro</span>
       </div>
       <div>
-        <button className="btn">Add New Job</button>
+        <button className="btn" onClick={onAddClick}>Add New Job</button>
       </div>
     </header>
   );
