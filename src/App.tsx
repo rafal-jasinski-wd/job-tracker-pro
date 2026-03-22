@@ -5,11 +5,12 @@ import { TrackerPage } from './pages/TrackerPage';
 import { JobsPage } from './pages/JobsPage';
 import { JobForm } from './components/JobForm';
 import type { Job } from './types/job';
+import { useLocalStorage } from './hooks/useLocalStorage';
 import './index.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'tracker' | 'jobs'>('tracker');
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useLocalStorage<Job[]>('jobtrackr_jobs', []);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
 
