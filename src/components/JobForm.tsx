@@ -3,16 +3,17 @@ import type { Job } from '../types/job';
 import { X } from 'lucide-react';
 
 interface JobFormProps {
+  initialData?: Job;
   onSubmit: (job: Job) => void;
   onCancel: () => void;
 }
 
-export const JobForm: React.FC<JobFormProps> = ({ onSubmit, onCancel }) => {
-  const [company, setCompany] = useState('');
-  const [position, setPosition] = useState('');
-  const [status, setStatus] = useState<Job['status']>('applied');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [notes, setNotes] = useState('');
+export const JobForm: React.FC<JobFormProps> = ({ initialData, onSubmit, onCancel }) => {
+  const [company, setCompany] = useState(initialData?.company || '');
+  const [position, setPosition] = useState(initialData?.position || '');
+  const [status, setStatus] = useState<Job['status']>(initialData?.status || 'applied');
+  const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
+  const [notes, setNotes] = useState(initialData?.notes || '');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,7 +24,7 @@ export const JobForm: React.FC<JobFormProps> = ({ onSubmit, onCancel }) => {
     }
 
     const newJob: Job = {
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+      id: initialData?.id || (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString()),
       company: company.trim(),
       position: position.trim(),
       status,
@@ -32,13 +33,6 @@ export const JobForm: React.FC<JobFormProps> = ({ onSubmit, onCancel }) => {
     };
 
     onSubmit(newJob);
-    // Form will reset naturally if it is unmounted, but we reset anyway:
-    setCompany('');
-    setPosition('');
-    setStatus('applied');
-    setDate(newJob.date);
-    setNotes('');
-    setError('');
   };
 
   return (
@@ -55,7 +49,9 @@ export const JobForm: React.FC<JobFormProps> = ({ onSubmit, onCancel }) => {
           <X size={20} />
         </button>
         
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>Add Application</h2>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>
+          {initialData ? 'Edit Application' : 'Add Application'}
+        </h2>
         
         {error && (
           <div style={{ padding: '0.75rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.875rem' }}>
@@ -128,7 +124,7 @@ export const JobForm: React.FC<JobFormProps> = ({ onSubmit, onCancel }) => {
               Cancel
             </button>
             <button type="submit" className="btn">
-              Save Application
+              {initialData ? 'Save Changes' : 'Save Application'}
             </button>
           </div>
         </form>

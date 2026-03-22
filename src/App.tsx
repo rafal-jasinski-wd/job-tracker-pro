@@ -11,26 +11,52 @@ function App() {
   const [activeTab, setActiveTab] = useState<'tracker' | 'jobs'>('tracker');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
 
-  const handleAddJob = (job: Job) => {
-    setJobs(prevJobs => [job, ...prevJobs]);
+  const handleSaveJob = (job: Job) => {
+    setJobs(prevJobs => {
+      const index = prevJobs.findIndex(j => j.id === job.id);
+      if (index >= 0) {
+        const nextJobs = [...prevJobs];
+        nextJobs[index] = job;
+        return nextJobs;
+      }
+      return [job, ...prevJobs];
+    });
     setIsFormOpen(false);
+    setJobToEdit(null);
   };
 
   const handleDeleteJob = (id: string) => {
     setJobs(prevJobs => prevJobs.filter(job => job.id !== id));
   };
 
+  const openFormForNew = () => {
+    setJobToEdit(null);
+    setIsFormOpen(true);
+  };
+
+  const openFormForEdit = (job: Job) => {
+    setJobToEdit(job);
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setJobToEdit(null);
+  };
+
   return (
     <div className="app-container">
-      <Header onAddClick={() => setIsFormOpen(true)} />
+      <Header onAddClick={openFormForNew} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
       
       {activeTab === 'tracker' ? (
         <TrackerPage 
           jobs={jobs} 
-          onAddClick={() => setIsFormOpen(true)} 
+          onAddClick={openFormForNew} 
           onDeleteJob={handleDeleteJob}
+          onEditJob={openFormForEdit}
         />
       ) : (
         <JobsPage />
@@ -38,8 +64,10 @@ function App() {
 
       {isFormOpen && (
         <JobForm 
-          onSubmit={handleAddJob} 
-          onCancel={() => setIsFormOpen(false)} 
+          key={jobToEdit?.id || 'new'}
+          initialData={jobToEdit || undefined}
+          onSubmit={handleSaveJob} 
+          onCancel={closeForm} 
         />
       )}
     </div>
