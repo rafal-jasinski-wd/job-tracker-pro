@@ -30,6 +30,11 @@
   padding: 0;
 }
 
+html {
+  overflow-y: scroll; /* Force vertical scrollbar track to prevent layout jump during animations */
+  overflow-x: hidden; /* Prevent horizontal scrollbars */
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-color);

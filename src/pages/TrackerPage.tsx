@@ -3,6 +3,7 @@ import { Briefcase } from 'lucide-react';
 import type { Job } from '../types/job';
 import { JobList } from '../components/JobList';
 import { FilterBar } from '../components/FilterBar';
+import { Stats } from '../components/Stats';
 
 interface TrackerPageProps {
   jobs: Job[];
@@ -31,6 +32,8 @@ export const TrackerPage: React.FC<TrackerPageProps> = ({ jobs, onAddClick, onDe
     <div className="main-content">
       <h1 className="page-title">Applications Tracker</h1>
       <p className="page-subtitle">Manage your active job applications and keep track of your progress.</p>
+      
+      {jobs.length > 0 && <Stats jobs={jobs} />}
       
       {jobs.length > 0 && (
         <FilterBar 
