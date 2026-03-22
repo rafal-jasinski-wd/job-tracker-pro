@@ -65,6 +65,7 @@ body {
   font-size: 1.5rem;
   font-weight: 800;
   background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
@@ -215,12 +216,22 @@ body {
   color: var(--text-main);
 }
 
-.badge.success {
-  background-color: #dcfce7;
-  color: #166534;
+.badge.applied {
+  background-color: color-mix(in srgb, #3b82f6 20%, transparent);
+  color: #3b82f6;
 }
 
-.badge.warning {
-  background-color: #fef9c3;
-  color: #854d0e;
+.badge.interview {
+  background-color: color-mix(in srgb, #eab308 20%, transparent);
+  color: #eab308;
+}
+
+.badge.offer {
+  background-color: color-mix(in srgb, #22c55e 20%, transparent);
+  color: #22c55e;
+}
+
+.badge.rejected {
+  background-color: color-mix(in srgb, #ef4444 20%, transparent);
+  color: #ef4444;
 }
