@@ -1,12 +1,13 @@
 import React from 'react';
-import { Building2, Clock } from 'lucide-react';
+import { Building2, Clock, Trash2 } from 'lucide-react';
 import type { Job } from '../types/job';
 
 interface JobItemProps {
   job: Job;
+  onDeleteJob: (id: string) => void;
 }
 
-export const JobItem: React.FC<JobItemProps> = ({ job }) => {
+export const JobItem: React.FC<JobItemProps> = ({ job, onDeleteJob }) => {
   return (
     <div className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -41,9 +42,19 @@ export const JobItem: React.FC<JobItemProps> = ({ job }) => {
           <Clock size={14} />
           <span>{job.date}</span>
         </div>
-        <button className="btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)' }}>
-          View
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button 
+            onClick={() => onDeleteJob(job.id)}
+            className="btn" 
+            style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem', backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center' }}
+            title="Delete Application"
+          >
+            <Trash2 size={16} />
+          </button>
+          <button className="btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)' }}>
+            View
+          </button>
+        </div>
       </div>
     </div>
   );

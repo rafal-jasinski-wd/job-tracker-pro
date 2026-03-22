@@ -6,9 +6,10 @@ import { JobList } from '../components/JobList';
 interface TrackerPageProps {
   jobs: Job[];
   onAddClick?: () => void;
+  onDeleteJob: (id: string) => void;
 }
 
-export const TrackerPage: React.FC<TrackerPageProps> = ({ jobs, onAddClick }) => {
+export const TrackerPage: React.FC<TrackerPageProps> = ({ jobs, onAddClick, onDeleteJob }) => {
   return (
     <div className="main-content">
       <h1 className="page-title">Applications Tracker</h1>
@@ -22,7 +23,7 @@ export const TrackerPage: React.FC<TrackerPageProps> = ({ jobs, onAddClick }) =>
           <button className="btn" onClick={onAddClick}>Add Application</button>
         </div>
       ) : (
-        <JobList jobs={jobs} />
+        <JobList jobs={jobs} onDeleteJob={onDeleteJob} />
       )}
     </div>
   );

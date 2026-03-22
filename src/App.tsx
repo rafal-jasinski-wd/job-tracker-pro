@@ -17,13 +17,21 @@ function App() {
     setIsFormOpen(false);
   };
 
+  const handleDeleteJob = (id: string) => {
+    setJobs(prevJobs => prevJobs.filter(job => job.id !== id));
+  };
+
   return (
     <div className="app-container">
       <Header onAddClick={() => setIsFormOpen(true)} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
       
       {activeTab === 'tracker' ? (
-        <TrackerPage jobs={jobs} onAddClick={() => setIsFormOpen(true)} />
+        <TrackerPage 
+          jobs={jobs} 
+          onAddClick={() => setIsFormOpen(true)} 
+          onDeleteJob={handleDeleteJob}
+        />
       ) : (
         <JobsPage />
       )}
