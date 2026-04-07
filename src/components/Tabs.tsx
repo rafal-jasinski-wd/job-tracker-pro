@@ -1,25 +1,33 @@
-import React from 'react';
+import { Plus } from 'lucide-react';
 
 interface TabsProps {
   activeTab: 'tracker' | 'jobs';
   onTabChange: (tab: 'tracker' | 'jobs') => void;
+  onAddClick?: () => void;
 }
 
-export const Tabs: React.FC<TabsProps> = ({ activeTab, onTabChange }) => {
+export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
   return (
-    <div className="nav-tabs">
-      <button 
-        className={`tab-btn ${activeTab === 'tracker' ? 'active' : ''}`}
-        onClick={() => onTabChange('tracker')}
-      >
-        My Tracker
-      </button>
-      <button 
-        className={`tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
-        onClick={() => onTabChange('jobs')}
-      >
-        Find Jobs
-      </button>
+    <div className="nav-tabs tabs-inner">
+      <div className="tabs-list">
+        <button
+          className={`tab-btn ${activeTab === 'tracker' ? 'active' : ''}`}
+          onClick={() => onTabChange('tracker')}
+        >
+          My Tracker
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
+          onClick={() => onTabChange('jobs')}
+        >
+          Find Jobs
+        </button>
+      </div>
+      <div>
+        <button className="btn tabs-add-btn" onClick={onAddClick} title="Add Application">
+          <Plus size={16} /> <span className="hide-on-mobile">Add Application</span>
+        </button>
+      </div>
     </div>
   );
 };

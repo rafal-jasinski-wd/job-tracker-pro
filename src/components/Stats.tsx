@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { Briefcase, Calendar, CheckCircle, XCircle } from 'lucide-react';
 import type { Job } from '../types/job';
 
@@ -6,65 +6,57 @@ interface StatsProps {
   jobs: Job[];
 }
 
-export const Stats: React.FC<StatsProps> = ({ jobs }) => {
-  const stats = useMemo(() => {
-    return {
-      total: jobs.length,
-      interview: jobs.filter(j => j.status === 'interview').length,
-      offer: jobs.filter(j => j.status === 'offer').length,
-      rejected: jobs.filter(j => j.status === 'rejected').length
-    };
-  }, [jobs]);
+export const Stats = memo<StatsProps>(({ jobs }) => {
+  const stats = useMemo(() => ({
+    total: jobs.length,
+    interview: jobs.filter(j => j.status === 'interview').length,
+    offer: jobs.filter(j => j.status === 'offer').length,
+    rejected: jobs.filter(j => j.status === 'rejected').length
+  }), [jobs]);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
-      <div className="card" style={{ padding: '1.25rem', borderBottom: '4px solid var(--primary)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '0.25rem' }}>Total Applications</p>
-            <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1' }}>{stats.total}</p>
-          </div>
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)', borderRadius: '12px', color: 'var(--primary)' }}>
+    <div className="stats-grid">
+      <div className="card stat-card stat-card--total">
+        <p className="stat-label">Total Applications</p>
+        <div className="stat-body">
+          <p className="stat-number">{stats.total}</p>
+          <div className="stat-icon stat-icon--total">
             <Briefcase size={24} strokeWidth={2.5} />
           </div>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.25rem', borderBottom: '4px solid #eab308' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '0.25rem' }}>Interviews</p>
-            <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1' }}>{stats.interview}</p>
-          </div>
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, #eab308 10%, transparent)', borderRadius: '12px', color: '#eab308' }}>
+      <div className="card stat-card stat-card--interview">
+        <p className="stat-label">Interviews</p>
+        <div className="stat-body">
+          <p className="stat-number">{stats.interview}</p>
+          <div className="stat-icon stat-icon--interview">
             <Calendar size={24} strokeWidth={2.5} />
           </div>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.25rem', borderBottom: '4px solid #22c55e' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '0.25rem' }}>Offers</p>
-            <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1' }}>{stats.offer}</p>
-          </div>
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, #22c55e 10%, transparent)', borderRadius: '12px', color: '#22c55e' }}>
+      <div className="card stat-card stat-card--offer">
+        <p className="stat-label">Offers</p>
+        <div className="stat-body">
+          <p className="stat-number">{stats.offer}</p>
+          <div className="stat-icon stat-icon--offer">
             <CheckCircle size={24} strokeWidth={2.5} />
           </div>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.25rem', borderBottom: '4px solid #ef4444' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '0.25rem' }}>Rejected</p>
-            <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1' }}>{stats.rejected}</p>
-          </div>
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, #ef4444 10%, transparent)', borderRadius: '12px', color: '#ef4444' }}>
+      <div className="card stat-card stat-card--rejected">
+        <p className="stat-label">Rejected</p>
+        <div className="stat-body">
+          <p className="stat-number">{stats.rejected}</p>
+          <div className="stat-icon stat-icon--rejected">
             <XCircle size={24} strokeWidth={2.5} />
           </div>
         </div>
       </div>
     </div>
   );
-};
+});
+
+Stats.displayName = 'Stats';

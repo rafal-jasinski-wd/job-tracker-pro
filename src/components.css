@@ -1,0 +1,890 @@
+/* ============================================================
+   components.css — All component-level styles
+   Replaces inline style={{ }} objects across all components
+   ============================================================ */
+
+/* ── JobItem ──────────────────────────────────────────────── */
+.ji-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ji-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  word-break: break-word;
+}
+
+.ji-company-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+.ji-link-row {
+  margin-bottom: 1rem;
+}
+
+.ji-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ji-notes {
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.ji-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.ji-date {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ji-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ji-btn-view {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+.ji-btn-icon {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+/* ── JobDetailModal ───────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-box {
+  background-color: var(--bg-color);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background-color: color-mix(in srgb, var(--surface) 95%, transparent);
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  padding-right: 2rem;
+  color: var(--text-main);
+}
+
+.modal-close-btn {
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  position: absolute;
+  right: 1.25rem;
+  top: 1.25rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--surface);
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 1.75rem;
+}
+
+.modal-job-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-job-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-job-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+}
+
+.modal-job-company {
+  font-size: 1rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.modal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.modal-badge {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.modal-section {
+  margin-bottom: 2rem;
+}
+
+.modal-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.modal-content-box {
+  padding: 1.25rem;
+  background-color: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.modal-content-box--notes {
+  white-space: pre-wrap;
+}
+
+.modal-link-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-apply-btn {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── JobForm ──────────────────────────────────────────────── */
+.form-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem;
+  position: relative;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.form-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.form-error {
+  padding: 0.75rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  outline: none;
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-btn-cancel {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+/* ── FilterBar ────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-search-wrap {
+  flex: 1 1 300px;
+  position: relative;
+}
+
+.filter-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+}
+
+.filter-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--surface);
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.filter-select {
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  outline: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border);
+  background-color: var(--surface);
+  padding: 1.5rem 2rem;
+  margin-top: auto;
+}
+
+.footer-creator {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footer-creator-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footer-logo {
+  width: 40px;
+  object-fit: cover;
+}
+
+.footer-powered {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footer-powered-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footer-api-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-color);
+  transition: all 0.2s;
+}
+
+.footer-api-link:hover {
+  background-color: var(--surface);
+}
+
+.footer-api-favicon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.footer-api-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.footer-copyright-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.footer-copyright-year {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── JobSearchResults ─────────────────────────────────────── */
+.jsr-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.jsr-grid-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.jsr-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.jsr-brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jsr-job-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+}
+
+.jsr-job-company {
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.jsr-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.jsr-badge {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: none;
+}
+
+.jsr-snippet {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.jsr-card-footer {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.jsr-posted-date {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.jsr-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.jsr-btn-view {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.jsr-btn-save {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background-color: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.jsr-btn-apply {
+  flex: 1 1 100%;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  justify-content: center;
+}
+
+/* ── JobsPage ─────────────────────────────────────────────── */
+.search-card {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  overflow: visible;
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  align-items: end;
+}
+
+.search-field {
+  position: relative;
+}
+
+.search-field-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.search-select {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.search-btn-wrap {
+  display: flex;
+  height: 46px;
+}
+
+.search-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  padding: 0 1.5rem;
+  font-size: 1rem;
+}
+
+.results-container {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.empty-state--error {
+  border-style: solid;
+  border-color: #ef4444;
+  background-color: color-mix(in srgb, #ef4444 5%, transparent);
+}
+
+.empty-state--transparent {
+  border-style: solid;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.empty-title--error {
+  color: #ef4444;
+}
+
+.empty-text {
+  max-width: 400px;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
+
+.empty-text--error {
+  color: var(--text-main);
+}
+
+.empty-spinner {
+  margin-bottom: 1rem;
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+/* ── TrackerPage empty states ─────────────────────────────── */
+.tracker-empty {
+  padding: 3rem 2rem;
+}
+
+/* ── Tabs ────────────────────────────────────────────────── */
+.tabs-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabs-list {
+  display: flex;
+  gap: 2rem;
+}
+
+.tabs-add-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.theme-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.theme-btn:hover {
+  color: var(--text-main);
+  border-color: var(--primary);
+}
+
+/* ── Stats Cards ──────────────────────────────────────────── */
+.stat-card {
+  padding: 1.25rem;
+}
+
+.stat-card--total {
+  border-bottom: 4px solid var(--primary);
+}
+
+.stat-card--interview {
+  border-bottom: 4px solid #eab308;
+}
+
+.stat-card--offer {
+  border-bottom: 4px solid #22c55e;
+}
+
+.stat-card--rejected {
+  border-bottom: 4px solid #ef4444;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.stat-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-icon {
+  padding: 0.75rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon--total {
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.stat-icon--interview {
+  background-color: color-mix(in srgb, #eab308 10%, transparent);
+  color: #eab308;
+}
+
+.stat-icon--offer {
+  background-color: color-mix(in srgb, #22c55e 10%, transparent);
+  color: #22c55e;
+}
+
+.stat-icon--rejected {
+  background-color: color-mix(in srgb, #ef4444 10%, transparent);
+  color: #ef4444;
+}
+
+/* ── Utility classes ──────────────────────────────────────── */
+
+/* Shared empty-state minimum heights */
+.empty-state--min-h-30 {
+  min-height: 30vh;
+}
+
+.empty-state--min-h-50 {
+  min-height: 50vh;
+}
+
+/* Icon spacing helpers (replaces marginLeft/marginRight on Lucide icons) */
+.icon-mr {
+  margin-right: 0.25rem;
+}
+
+.icon-ml {
+  margin-left: 0.25rem;
+}
+
+/* Icon opacity modifiers */
+.icon-dim-50 {
+  opacity: 0.5;
+}
+
+.icon-dim-30 {
+  opacity: 0.3;
+}
+
+/* Badge modifier — prevent shrinking in flex rows */
+.badge--no-shrink {
+  flex-shrink: 0;
+}
+
+/* Textarea resize */
+textarea.form-input {
+  resize: vertical;
+}
+
+/* Searching/scanning status text */
+.search-scanning-text {
+  color: var(--text-muted);
+  font-weight: 500;
+}

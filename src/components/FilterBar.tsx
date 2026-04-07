@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import type { Job } from '../types/job';
 
@@ -9,31 +9,27 @@ interface FilterBarProps {
   onStatusFilterChange: (status: Job['status'] | 'all') => void;
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({ 
-  searchQuery, 
-  onSearchChange, 
-  statusFilter, 
-  onStatusFilterChange 
-}) => {
+/** Memoized — re-renders only when search query or status filter changes. */
+export const FilterBar = memo(({ searchQuery, onSearchChange, statusFilter, onStatusFilterChange }: FilterBarProps) => {
   return (
-    <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-      <div style={{ flex: '1 1 300px', position: 'relative' }}>
-        <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input 
-          type="text" 
+    <div className="filter-bar">
+      <div className="filter-search-wrap">
+        <Search size={20} className="filter-search-icon" />
+        <input
+          type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search company or position..." 
-          style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 3rem', borderRadius: '8px', border: '1px solid var(--border)', backgroundColor: 'var(--surface)', color: 'var(--text-main)', fontSize: '1rem', outline: 'none' }}
+          placeholder="Search company or position..."
+          className="filter-input"
         />
       </div>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--surface)', padding: '0 1rem', borderRadius: '8px', border: '1px solid var(--border)' }}>
+
+      <div className="filter-select-wrap">
         <Filter size={18} color="var(--text-muted)" />
-        <select 
+        <select
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value as Job['status'] | 'all')}
-          style={{ border: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.875rem', outline: 'none', padding: '0.5rem', cursor: 'pointer' }}
+          className="filter-select"
         >
           <option value="all">All Statuses</option>
           <option value="applied">Applied</option>
@@ -44,4 +40,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
     </div>
   );
-};
+});
+
+FilterBar.displayName = 'FilterBar';

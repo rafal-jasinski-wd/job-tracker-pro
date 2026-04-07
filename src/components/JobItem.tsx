@@ -1,67 +1,64 @@
-import React from 'react';
-import { Building2, Clock, Trash2, Pencil } from 'lucide-react';
+import { memo } from 'react';
+import { Building2, Clock, Trash2, Pencil, ExternalLink } from 'lucide-react';
 import type { Job } from '../types/job';
+import { isSafeUrl } from '../utils/urlUtils';
 
 interface JobItemProps {
   job: Job;
   onDeleteJob: (id: string) => void;
   onEditJob: (job: Job) => void;
+  onViewJob: (job: Job) => void;
 }
 
-export const JobItem: React.FC<JobItemProps> = ({ job, onDeleteJob, onEditJob }) => {
+export const JobItem = memo<JobItemProps>(({ job, onDeleteJob, onEditJob, onViewJob }) => {
   return (
     <div className="card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{job.position}</h3>
-        <span className={`badge ${job.status}`}>
+      <div className="ji-header">
+        <h3 className="ji-title">{job.position}</h3>
+        <span className={`badge badge--no-shrink ${job.status}`}>
           {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
         </span>
       </div>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
+
+      <div className="ji-company-row">
         <Building2 size={16} />
         <span>{job.company}</span>
       </div>
-      
-      {job.notes && (
-        <div style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          <p>{job.notes}</p>
+
+      {/* SEC-03: Only render link if it's a safe http(s) URL */}
+      {isSafeUrl(job.link) && (
+        <div className="ji-link-row">
+          <a href={job.link} target="_blank" rel="noopener noreferrer" className="ji-link">
+            <ExternalLink size={14} /> Jooble Application Link
+          </a>
         </div>
       )}
-      
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        borderTop: '1px solid var(--border)', 
-        paddingTop: '1rem', 
-        fontSize: '0.875rem', 
-        color: 'var(--text-muted)', 
-        marginTop: job.notes ? '0' : '1.5rem' 
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+
+      {job.notes && (
+        <div className="ji-notes">
+          {job.notes}
+        </div>
+      )}
+
+      <div className="ji-footer" style={{ marginTop: job.notes ? '0' : '1.5rem' }}>
+        <div className="ji-date">
           <Clock size={14} />
           <span>{job.date}</span>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button 
-            onClick={() => onEditJob(job)}
-            className="btn" 
-            style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem', backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center' }}
-            title="Edit Application"
-          >
+        <div className="ji-actions">
+          <button onClick={() => onViewJob(job)} className="btn ji-btn-view" title="View Details">
+            View
+          </button>
+          <button onClick={() => onEditJob(job)} className="btn ji-btn-icon" title="Edit Application">
             <Pencil size={16} />
           </button>
-          <button 
-            onClick={() => onDeleteJob(job.id)}
-            className="btn" 
-            style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem', backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center' }}
-            title="Delete Application"
-          >
+          <button onClick={() => onDeleteJob(job.id)} className="btn ji-btn-icon" title="Delete Application">
             <Trash2 size={16} />
           </button>
         </div>
       </div>
     </div>
   );
-};
+});
+
+JobItem.displayName = 'JobItem';

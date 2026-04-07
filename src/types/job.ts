@@ -4,5 +4,6 @@ export interface Job {
   position: string;
   status: 'applied' | 'interview' | 'offer' | 'rejected';
   date: string;
-  notes: string;
+  notes?: string;
+  link?: string;
 }

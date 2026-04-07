@@ -1,14 +1,14 @@
-import React from 'react';
-import { Briefcase, Sun, Moon, Monitor } from 'lucide-react';
+import { memo } from 'react';
+import { Sun, Moon, Monitor } from 'lucide-react';
 import type { Theme } from '../hooks/useTheme';
 
 interface HeaderProps {
-  onAddClick?: () => void;
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onAddClick, theme, onThemeChange }) => {
+/** Memoized — re-renders only when the active theme changes. */
+export const Header = memo(({ theme, onThemeChange }: HeaderProps) => {
   const toggleTheme = () => {
     if (theme === 'light') onThemeChange('dark');
     else if (theme === 'dark') onThemeChange('system');
@@ -24,19 +24,16 @@ export const Header: React.FC<HeaderProps> = ({ onAddClick, theme, onThemeChange
   return (
     <header className="header">
       <div className="logo">
-        <Briefcase size={28} />
+        <img src="/jobtracker-logo.png" alt="JobTrackr Pro Logo" className="header-logo" />
         <span>JobTrackr Pro</span>
       </div>
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <button 
-          onClick={toggleTheme}
-          style={{ background: 'none', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.65rem', borderRadius: '50%', transition: 'all 0.2s', backgroundColor: 'var(--surface)' }}
-          title={`Theme: ${theme}`}
-        >
+      <div className="header-actions">
+        <button onClick={toggleTheme} className="theme-btn" title={`Theme: ${theme}`}>
           {getThemeIcon()}
         </button>
-        <button className="btn" onClick={onAddClick}>Add New Job</button>
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';

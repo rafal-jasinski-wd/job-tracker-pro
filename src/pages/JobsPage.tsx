@@ -1,115 +1,164 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Briefcase, Loader2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Search, MapPin, Briefcase, Loader2, Globe } from 'lucide-react';
+import { fetchJoobleJobs, type JoobleJob } from '../services/joobleApi';
+import { JobSearchResults } from '../components/JobSearchResults';
 
-export const JobsPage: React.FC = () => {
+interface JobsPageProps {
+  onSaveJob: (job: JoobleJob) => void;
+}
+
+const COUNTRY_MAP: Record<string, string> = {
+  'us': 'USA', 'gb': 'UK', 'ie': 'Ireland', 'ca': 'Canada',
+  'au': 'Australia', 'de': 'Germany', 'pl': 'Poland', 'nl': 'Netherlands'
+};
+
+export const JobsPage = ({ onSaveJob }: JobsPageProps) => {
   const [keyword, setKeyword] = useState('');
   const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('ie');
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState<JoobleJob[]>([]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  // Cancels the previous in-flight request when a new search starts
+  const abortRef = useRef<AbortController | null>(null);
+
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!keyword.trim() && !location.trim()) return;
-    
+
+    // Cancel any in-flight request before starting a new one
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+
     setIsSearching(true);
-    
-    // Simulate a network search request
-    setTimeout(() => {
+    setError(null);
+    setHasSearched(true);
+
+    const countryName = COUNTRY_MAP[country.toLowerCase()] || '';
+    const searchLocation = location.trim()
+      ? `${location.trim()}, ${countryName}`
+      : countryName;
+
+    try {
+      const data = await fetchJoobleJobs(keyword, searchLocation, abortRef.current.signal);
+      setResults(data);
+    } catch (err: unknown) {
+      // Only skip the error state update if the request was intentionally cancelled
+      if (!(err instanceof Error && err.name === 'AbortError')) {
+        const message = err instanceof Error ? err.message : 'An error occurred while fetching jobs from Jooble.';
+        setError(message);
+        setResults([]);
+      }
+    } finally {
       setIsSearching(false);
-      setHasSearched(true);
-    }, 1200);
+    }
   };
 
   return (
     <div className="main-content">
       <h1 className="page-title">Find Jobs</h1>
-      <p className="page-subtitle">Search and discover new career opportunities.</p>
-      
-      <div className="card" style={{ marginBottom: '2rem', padding: '1.5rem', overflow: 'visible' }}>
-        <form 
-          onSubmit={handleSearch} 
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
-            gap: '1.25rem', 
-            alignItems: 'end' 
-          }}
-        >
-          
+      <p className="page-subtitle">Search and discover new career opportunities securely via Jooble.</p>
+
+      <div className="card search-card">
+        <form onSubmit={handleSearch} className="search-form">
+
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 600 }}>Keywords</label>
-            <div style={{ position: 'relative' }}>
-              <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-              <input 
-                type="text" 
+            <label className="form-label">Keywords</label>
+            <div className="search-field">
+              <Search size={18} className="search-field-icon" />
+              <input
+                type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="Job title, skills, or company" 
-                style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.75rem', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', fontSize: '1rem', outline: 'none', transition: 'all 0.2s' }}
+                placeholder="Job title, skills..."
+                className="search-input"
+                maxLength={100}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 600 }}>Location</label>
-            <div style={{ position: 'relative' }}>
-              <MapPin size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-              <input 
-                type="text" 
+            <label className="form-label">Location</label>
+            <div className="search-field">
+              <MapPin size={18} className="search-field-icon" />
+              <input
+                type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="City, state, or remote" 
-                style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.75rem', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', fontSize: '1rem', outline: 'none', transition: 'all 0.2s' }}
+                placeholder="City, region..."
+                className="search-input"
+                maxLength={100}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', height: '46px' }}>
-            <button 
-              type="submit" 
-              className="btn" 
-              style={{ width: '100%', height: '100%', borderRadius: '10px', padding: '0 1.5rem', fontSize: '1rem' }} 
-              disabled={isSearching}
-            >
-              {isSearching ? <Loader2 size={20} className="spinner" style={{ animation: 'spin 1.5s linear infinite' }} /> : 'Search Jobs'}
+          <div>
+            <label className="form-label">Country</label>
+            <div className="search-field">
+              <Globe size={18} className="search-field-icon" />
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="search-select"
+              >
+                <option value="ie">Ireland</option>
+                <option value="gb">United Kingdom</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="au">Australia</option>
+                <option value="de">Germany</option>
+                <option value="pl">Poland</option>
+                <option value="nl">Netherlands</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="search-btn-wrap">
+            <button type="submit" className="btn search-btn" disabled={isSearching}>
+              {isSearching ? <Loader2 size={20} className="spinner" /> : 'Search Jobs'}
             </button>
           </div>
-          
+
         </form>
       </div>
-      
-      {/* Results Container */}
-      <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+
+      <div className="results-container">
         {isSearching ? (
-          <div className="empty-state" style={{ minHeight: '30vh' }}>
-            <Loader2 size={40} color="var(--primary)" style={{ animation: 'spin 1.5s linear infinite', marginBottom: '1rem' }} />
-            <p style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Scanning active job boards...</p>
+          <div className="empty-state empty-state--min-h-30">
+            <Loader2 size={40} color="var(--primary)" className="spinner empty-spinner" />
+            <p className="search-scanning-text">Scanning active job boards via Jooble...</p>
           </div>
-        ) : hasSearched ? (
-          <div className="empty-state" style={{ minHeight: '30vh' }}>
-            <Briefcase size={48} className="empty-icon" style={{ opacity: 0.5 }} />
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-main)' }}>No matching jobs found</h3>
-            <p style={{ maxWidth: '400px', marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
+        ) : error ? (
+          <div className="empty-state empty-state--error empty-state--min-h-30">
+            <h3 className="empty-title empty-title--error">Search Failed</h3>
+            <p className="empty-text empty-text--error">{error}</p>
+          </div>
+        ) : hasSearched && results.length === 0 ? (
+          <div className="empty-state empty-state--min-h-30">
+            <Briefcase size={48} className="empty-icon icon-dim-50" />
+            <h3 className="empty-title">No matching jobs found</h3>
+            <p className="empty-text">
               Try adjusting your search criteria, simplifying your keywords, or expanding your location scope.
             </p>
-            <button className="btn" onClick={() => { setKeyword(''); setLocation(''); setHasSearched(false); }} style={{ backgroundColor: 'transparent', color: 'var(--text-main)', border: '1px solid var(--border)' }}>
+            <button
+              className="btn btn--ghost"
+              onClick={() => { setKeyword(''); setLocation(''); setHasSearched(false); setResults([]); }}
+            >
               Clear Search
             </button>
           </div>
+        ) : hasSearched && results.length > 0 ? (
+          <JobSearchResults results={results} onSaveJob={onSaveJob} />
         ) : (
-          <div className="empty-state" style={{ minHeight: '30vh', borderStyle: 'solid', borderColor: 'transparent', backgroundColor: 'transparent' }}>
-            <Briefcase size={48} className="empty-icon" style={{ opacity: 0.3 }} />
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-main)' }}>Ready to find your next role?</h3>
-            <p style={{ maxWidth: '400px', marginBottom: '1.5rem', color: 'var(--text-muted)' }}>Enter a keyword or location above to discover jobs tailored to your skills.</p>
+          <div className="empty-state empty-state--transparent empty-state--min-h-30">
+            <Briefcase size={48} className="empty-icon icon-dim-30" />
+            <h3 className="empty-title">Ready to find your next role?</h3>
+            <p className="empty-text">Enter a keyword or location above to discover active jobs via Jooble.</p>
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

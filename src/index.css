@@ -63,7 +63,6 @@ h1, h2, h3, h4, h5, h6, .logo {
 }
 
 .header {
-  background-color: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 1rem 2rem;
   display: flex;
@@ -88,16 +87,26 @@ h1, h2, h3, h4, h5, h6, .logo {
   gap: 0.5rem;
 }
 
+.header-logo {
+  height: 42px;
+  width: auto;
+  border-radius: 10px;
+}
+
+.dark .header-logo {
+  /* Organically strips the dark background from the PNG to make it transparent */
+  mix-blend-mode: screen;
+}
+
 /* Navigation */
 .nav-tabs {
   display: flex;
-  gap: 2rem;
   padding: 0 2rem;
   border-bottom: 1px solid var(--border);
   background-color: var(--surface);
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .nav-tabs::-webkit-scrollbar {
@@ -147,6 +156,14 @@ h1, h2, h3, h4, h5, h6, .logo {
   margin: 0 auto;
   width: 100%;
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  animation: spin 1.5s linear infinite;
 }
 
 @keyframes fadeIn {
@@ -267,7 +284,7 @@ select option {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary) !important;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
@@ -295,12 +312,41 @@ input:focus, select:focus, textarea:focus {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Footer */
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
 /* Responsive Overrides */
+@media (max-width: 924px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+}
+
 @media (max-width: 768px) {
+  .hide-on-mobile { display: none; }
   .header { padding: 1rem; }
   .nav-tabs { padding: 0 1rem; }
   .main-content { padding: 1.5rem 1rem; }
   .jobs-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   .page-title { font-size: 2rem; }
   .card { padding: 1.25rem; }
+  .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+  /* CSS-01: Proper responsive classes instead of brittle selectors + !important */
+  .stat-icon { padding: 0.5rem; border-radius: 8px; }
+  .stat-icon svg { width: 18px; height: 18px; }
 }
