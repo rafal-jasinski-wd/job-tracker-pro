@@ -21,8 +21,7 @@ export const handler: Handler = async (event, context) => {
 
   try {
     const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+    
     // Parse the job details sent securely from the client browser
     const { title, company, description, notes } = JSON.parse(event.body || '{}');
 
@@ -44,14 +43,32 @@ export const handler: Handler = async (event, context) => {
     
     Format the output cleanly in Markdown. Do not include any greeting or conversational filler—just output the markdown directly.`;
 
-    const result = await model.generateContent(systemPrompt);
+    // Try a series of models in case one is restricted or missing on this specific API key
+    const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
+    let result;
+    let lastError;
+
+    for (const modelName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        result = await model.generateContent(systemPrompt);
+        if (result) break; 
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[AI Debug] Model ${modelName} failed:`, err.message);
+        continue;
+      }
+    }
+
+    if (!result) {
+      throw lastError || new Error('All attempting AI models failed to respond.');
+    }
     
-    // Logic to handle safety filters or empty responses
     const response = await result.response;
     const text = response.text();
 
     if (!text) {
-      throw new Error('The AI generated an empty response. This usually happens if the safety filters are too strict.');
+      throw new Error('The AI generated an empty response.');
     }
 
     return {
