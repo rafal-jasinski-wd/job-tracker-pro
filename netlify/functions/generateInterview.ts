@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const handler: Handler = async (event, context) => {
   // Only allow POST requests for security
@@ -20,9 +20,8 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
-    const ai = new GoogleGenAI({ 
-      apiKey: GEMINI_KEY 
-    });
+    const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // Parse the job details sent securely from the client browser
     const { title, company, description, notes } = JSON.parse(event.body || '{}');
@@ -45,15 +44,13 @@ export const handler: Handler = async (event, context) => {
     
     Format the output cleanly in Markdown. Do not include any greeting or conversational filler—just output the markdown directly.`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: systemPrompt,
-    });
+    const result = await model.generateContent(systemPrompt);
+    const text = result.response.text();
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ result: response.text }),
+      body: JSON.stringify({ result: text }),
     };
 
   } catch (error: any) {
