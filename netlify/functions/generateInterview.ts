@@ -45,7 +45,14 @@ export const handler: Handler = async (event, context) => {
     Format the output cleanly in Markdown. Do not include any greeting or conversational filler—just output the markdown directly.`;
 
     const result = await model.generateContent(systemPrompt);
-    const text = result.response.text();
+    
+    // Logic to handle safety filters or empty responses
+    const response = await result.response;
+    const text = response.text();
+
+    if (!text) {
+      throw new Error('The AI generated an empty response. This usually happens if the safety filters are too strict.');
+    }
 
     return {
       statusCode: 200,
@@ -55,9 +62,14 @@ export const handler: Handler = async (event, context) => {
 
   } catch (error: any) {
     console.error("AI Generation failed:", error);
+    
+    // Return the EXACT error message to the frontend for debugging
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to generate mock interview.', details: error.message }),
+      body: JSON.stringify({ 
+        error: error.message || 'Failed to generate mock interview.',
+        details: error.toString()
+      }),
     };
   }
 };

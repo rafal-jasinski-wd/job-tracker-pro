@@ -20,7 +20,8 @@ export const generateMockInterview = async (job: JobDetailData): Promise<string>
         throw new Error('AI Function not found. If you are testing locally, please use "netlify dev" instead of "npm run dev". If on production, wait 1 minute for the functions to propagate.');
       }
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Server Error (${response.status}): Failed to generate prep.`);
+      const detailedMsg = errorData.details ? `${errorData.error}: ${errorData.details}` : (errorData.error || `Server Error (${response.status}): Failed to generate prep.`);
+      throw new Error(detailedMsg);
     }
 
     const data = await response.json();
