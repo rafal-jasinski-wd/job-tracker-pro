@@ -346,7 +346,7 @@ input:focus, select:focus, textarea:focus {
   .page-title { font-size: 2rem; }
   .card { padding: 1.25rem; }
   .footer-inner { flex-direction: column; align-items: center; text-align: center; }
-  /* CSS-01: Proper responsive classes instead of brittle selectors + !important */
+  /* Proper responsive classes instead of brittle selectors + !important */
   .stat-icon { padding: 0.5rem; border-radius: 8px; }
   .stat-icon svg { width: 18px; height: 18px; }
 }

@@ -76,7 +76,7 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
 
   return (
     <div className="form-backdrop" onClick={onCancel}>
-      {/* HTML-01: ARIA role, modal, labelledby */}
+      {/* ARIA role, modal, labelledby */}
       <div
         ref={formRef}
         className="card form-card"

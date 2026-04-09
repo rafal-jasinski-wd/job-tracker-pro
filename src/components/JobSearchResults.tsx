@@ -22,7 +22,7 @@ export const JobSearchResults = memo<JobSearchResultsProps>(({ results, onSaveJo
 
   return (
     <div>
-      {/* HTML-02: p instead of h3 — avoids skipping heading levels (h1→h3) */}
+      {/* Use p instead of h3 — avoids skipping heading levels (h1→h3) */}
       <p className="jsr-grid-header">Found {results.length} matched jobs</p>
       <div className="jobs-grid">
         {results.map((job) => (
@@ -61,7 +61,7 @@ export const JobSearchResults = memo<JobSearchResultsProps>(({ results, onSaveJo
                 <button onClick={() => onSaveJob(job)} className="btn jsr-btn-save" title="Save to Tracker">
                   Save <BookmarkPlus size={14} className="icon-ml" />
                 </button>
-                {/* SEC-03: Only render if URL is a safe http(s) link */}
+                {/* Only render if URL is a safe http(s) link */}
                 {isSafeUrl(job.link) && (
                   <a href={job.link} target="_blank" rel="noopener noreferrer" className="btn jsr-btn-apply">
                     Apply <ExternalLink size={14} className="icon-ml" />

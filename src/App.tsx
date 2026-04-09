@@ -4,11 +4,13 @@ import { Tabs } from './components/Tabs';
 import { JobForm } from './components/JobForm';
 import { Toast } from './components/Toast';
 import type { Job } from './types/job';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useFirestoreJobs } from './hooks/useFirestoreJobs';
+import { useAuth } from './contexts/AuthContext';
 import { useTheme } from './hooks/useTheme';
 import type { JoobleJob } from './services/joobleApi';
 import { mapApiJobToJob } from './utils/mappers';
 import { Footer } from './components/Footer';
+import { AuthPage } from './pages/AuthPage';
 import './index.css';
 
 // Pages are lazy-loaded to reduce the initial JS bundle size
@@ -16,8 +18,9 @@ const TrackerPage = lazy(() => import('./pages/TrackerPage').then(m => ({ defaul
 const JobsPage    = lazy(() => import('./pages/JobsPage').then(m => ({ default: m.JobsPage })));
 
 function App() {
+  const { user, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<'tracker' | 'jobs'>('tracker');
-  const [jobs, setJobs] = useLocalStorage<Job[]>('jobtrackr_jobs', []);
+  const [jobs, setJobs, jobsLoading] = useFirestoreJobs();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -65,6 +68,12 @@ function App() {
     showToast('Application removed');
   }, [setJobs, showToast]);
 
+  const handleUpdateJob = useCallback((updatedJob: Job) => {
+    setJobs((prevJobs: Job[]) => prevJobs.map(job => 
+      job.id === updatedJob.id ? updatedJob : job
+    ));
+  }, [setJobs]);
+
   const openFormForNew = useCallback(() => {
     setJobToEdit(null);
     setIsFormOpen(true);
@@ -80,19 +89,36 @@ function App() {
     setJobToEdit(null);
   }, []);
 
+  if (authLoading) {
+    return (
+      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <p style={{ color: 'var(--text-muted)' }}>Loading application...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthPage />;
+  }
+
   return (
     <div className="app-container">
       <Header theme={theme} onThemeChange={setTheme} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} onAddClick={openFormForNew} />
 
-      {/* Show a blank shell while the page chunk loads */}
+      {/* Show a blank shell while the page chunk loads or data loads */}
       <Suspense fallback={<div className="main-content empty-state empty-state--min-h-50" />}>
-        {activeTab === 'tracker' ? (
+        {jobsLoading ? (
+           <div className="main-content empty-state empty-state--min-h-50">
+             <p className="search-scanning-text">Syncing from cloud...</p>
+           </div>
+        ) : activeTab === 'tracker' ? (
           <TrackerPage
             jobs={jobs}
             onAddClick={openFormForNew}
             onDeleteJob={handleDeleteJob}
             onEditJob={openFormForEdit}
+            onUpdateJob={handleUpdateJob}
           />
         ) : (
           <JobsPage onSaveJob={handleSaveFromSearch} />

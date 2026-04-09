@@ -1,5 +1,5 @@
 /**
- * SEC-01: Netlify serverless proxy for Jooble API
+ * Netlify serverless proxy for Jooble API
  * The API key lives only in Netlify environment variables — never in the browser.
  */
 

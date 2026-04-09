@@ -25,7 +25,7 @@ export const JobItem = memo<JobItemProps>(({ job, onDeleteJob, onEditJob, onView
         <span>{job.company}</span>
       </div>
 
-      {/* SEC-03: Only render link if it's a safe http(s) URL */}
+      {/* Only render link if it's a safe http(s) URL */}
       {isSafeUrl(job.link) && (
         <div className="ji-link-row">
           <a href={job.link} target="_blank" rel="noopener noreferrer" className="ji-link">

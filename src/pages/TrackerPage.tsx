@@ -1,22 +1,25 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, LayoutList, LayoutGrid } from 'lucide-react';
 import type { Job } from '../types/job';
 import { JobList } from '../components/JobList';
 import { FilterBar } from '../components/FilterBar';
 import { Stats } from '../components/Stats';
 import { JobDetailModal } from '../components/JobDetailModal';
+import { KanbanBoard } from '../components/KanbanBoard';
 
 interface TrackerPageProps {
   jobs: Job[];
   onAddClick?: () => void;
   onDeleteJob: (id: string) => void;
   onEditJob: (job: Job) => void;
+  onUpdateJob: (job: Job) => void;
 }
 
-export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob }: TrackerPageProps) => {
+export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdateJob }: TrackerPageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<Job['status'] | 'all'>('all');
   const [viewJob, setViewJob] = useState<Job | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
 
   // Stable reference — avoids unnecessary re-renders of the modal on unrelated state changes
   const handleCloseModal = useCallback(() => setViewJob(null), []);
@@ -34,7 +37,29 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob }: Tracke
   return (
     <div className="main-content">
       <h1 className="page-title">Applications Tracker</h1>
-      <p className="page-subtitle">Manage your active job applications and keep track of your progress.</p>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p className="page-subtitle">Manage your active job applications and keep track of your progress.</p>
+        
+        {jobs.length > 0 && (
+          <div className="view-toggle">
+            <button 
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="List View"
+            >
+              <LayoutList size={18} />
+            </button>
+            <button 
+              className={`view-toggle-btn ${viewMode === 'board' ? 'active' : ''}`}
+              onClick={() => setViewMode('board')}
+              title="Kanban Board View"
+            >
+              <LayoutGrid size={18} />
+            </button>
+          </div>
+        )}
+      </div>
 
       {jobs.length > 0 && <Stats jobs={jobs} />}
 
@@ -63,8 +88,16 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob }: Tracke
             Clear Filters
           </button>
         </div>
-      ) : (
+      ) : viewMode === 'list' ? (
         <JobList jobs={filteredJobs} onDeleteJob={onDeleteJob} onEditJob={onEditJob} onViewJob={setViewJob} />
+      ) : (
+        <KanbanBoard 
+          jobs={filteredJobs} 
+          onUpdateJob={onUpdateJob}
+          onDeleteJob={onDeleteJob}
+          onEditJob={onEditJob}
+          onViewJob={setViewJob}
+        />
       )}
 
       {viewJob && (
