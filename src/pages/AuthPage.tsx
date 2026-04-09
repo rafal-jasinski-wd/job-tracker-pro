@@ -17,7 +17,19 @@ export const AuthPage = () => {
     if (msg.includes('auth/email-already-in-use')) msg = 'This email is already registered.';
     if (msg.includes('auth/weak-password')) msg = 'Password should be at least 6 characters.';
     if (msg.includes('auth/user-not-found')) msg = 'No user found with this email.';
+    if (msg.includes('auth/unauthorized-domain')) {
+      msg = 'This domain is not authorized in your Firebase Console. Please add your Netlify URL to the "Authorized Domains" list.';
+    }
     setError(msg);
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,7 +131,7 @@ export const AuthPage = () => {
 
             <button 
               type="button"
-              onClick={loginWithGoogle}
+              onClick={handleGoogleLogin}
               className="btn btn--ghost"
               style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
             >
@@ -127,6 +139,7 @@ export const AuthPage = () => {
             </button>
           </>
         )}
+
 
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
           {view === 'signin' ? (

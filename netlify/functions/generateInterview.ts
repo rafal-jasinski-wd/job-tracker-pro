@@ -7,10 +7,21 @@ export const handler: Handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
+  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+
+  if (!GEMINI_KEY) {
+    return { 
+      statusCode: 500, 
+      body: JSON.stringify({ 
+        error: 'Gemini API Key is not configured on Netlify.',
+        details: 'Go to your Netlify dashboard -> Site Settings -> Environment variables and add GEMINI_API_KEY.'
+      }) 
+    };
+  }
+
   try {
     const ai = new GoogleGenAI({ 
-      // This pulls directly from Netlify's secure Environment Variables area, NOT from Vite!
-      apiKey: process.env.GEMINI_API_KEY 
+      apiKey: GEMINI_KEY 
     });
 
     // Parse the job details sent securely from the client browser
