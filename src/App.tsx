@@ -16,10 +16,11 @@ import './index.css';
 // Pages are lazy-loaded to reduce the initial JS bundle size
 const TrackerPage = lazy(() => import('./pages/TrackerPage').then(m => ({ default: m.TrackerPage })));
 const JobsPage    = lazy(() => import('./pages/JobsPage').then(m => ({ default: m.JobsPage })));
+const InsightsPage = lazy(() => import('./pages/InsightsPage').then(m => ({ default: m.InsightsPage })));
 
 function App() {
   const { user, loading: authLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'tracker' | 'jobs'>('tracker');
+  const [activeTab, setActiveTab] = useState<'tracker' | 'jobs' | 'insights'>('tracker');
   const [jobs, setJobs, jobsLoading] = useFirestoreJobs();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
@@ -120,6 +121,8 @@ function App() {
             onEditJob={openFormForEdit}
             onUpdateJob={handleUpdateJob}
           />
+        ) : activeTab === 'insights' ? (
+          <InsightsPage jobs={jobs} />
         ) : (
           <JobsPage onSaveJob={handleSaveFromSearch} />
         )}
