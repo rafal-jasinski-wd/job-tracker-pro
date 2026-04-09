@@ -1090,3 +1090,24 @@ textarea.form-input {
   display: flex;
   align-items: center;
 }
+
+/* AI Section Animations */
+.spinner {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+.skeleton-text {
+  background: var(--border);
+  border-radius: 4px;
+}

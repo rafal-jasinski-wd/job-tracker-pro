@@ -12,6 +12,14 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
+// Log a warning if config is missing (common issue on Netlify/Vercel)
+if (!firebaseConfig.apiKey) {
+  console.error(
+    "🔥 Firebase Configuration Error: VITE_FIREBASE_API_KEY is missing!\n" +
+    "If you are on Netlify, please add your VITE_ environment variables to the Site Settings dashboard."
+  );
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

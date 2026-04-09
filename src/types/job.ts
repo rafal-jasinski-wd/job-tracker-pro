@@ -6,4 +6,6 @@ export interface Job {
   date: string;
   notes?: string;
   link?: string;
+  type?: string;
+  aiInterviewPrep?: string;
 }
