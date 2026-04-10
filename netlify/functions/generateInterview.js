@@ -1,12 +1,10 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
+// Uses raw fetch to call Google AI REST API — no SDK version issues
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
   const GEMINI_KEY = process.env.GEMINI_API_KEY;
-
   if (!GEMINI_KEY) {
     return {
       statusCode: 500,
@@ -40,35 +38,59 @@ Generate an AI Mock Interview guide with:
 
 Format the output cleanly in Markdown. No greeting or filler text — just the markdown.`;
 
-  const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro-latest'];
+  const requestBody = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+
+  // Try multiple model endpoints — v1beta and v1, with current model names
+  const endpoints = [
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent',
+    'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent',
+  ];
+
   let lastError = null;
 
-  const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-
-  for (const modelName of modelsToTry) {
+  for (const endpoint of endpoints) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
+      const res = await fetch(`${endpoint}?key=${GEMINI_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
 
-      if (!text) throw new Error('Empty AI response.');
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log(`[AI] ${endpoint} failed: ${JSON.stringify(data)}`);
+        lastError = data.error || { message: `HTTP ${res.status}` };
+        continue;
+      }
+
+      // Extract text from Google's response format
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) {
+        lastError = { message: 'Empty AI response from ' + endpoint };
+        continue;
+      }
 
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ result: text }),
       };
+
     } catch (err) {
-      console.log(`[AI] Model ${modelName} failed: ${err.message}`);
-      lastError = err;
-      // continue to next model
+      console.log(`[AI] Fetch error for ${endpoint}: ${err.message}`);
+      lastError = { message: err.message };
     }
   }
 
   return {
     statusCode: 500,
     body: JSON.stringify({
-      error: lastError ? lastError.message : 'All AI models failed.',
+      error: lastError ? (lastError.message || JSON.stringify(lastError)) : 'All AI models failed.',
     }),
   };
 };
