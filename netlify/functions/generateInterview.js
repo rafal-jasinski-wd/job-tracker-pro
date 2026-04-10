@@ -50,7 +50,7 @@ Format the output cleanly in Markdown. No greeting or filler text — just the m
     'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent',
   ];
 
-  let lastError = null;
+  const allErrors = [];
 
   for (const endpoint of endpoints) {
     try {
@@ -63,15 +63,15 @@ Format the output cleanly in Markdown. No greeting or filler text — just the m
       const data = await res.json();
 
       if (!res.ok) {
-        console.log(`[AI] ${endpoint} failed: ${JSON.stringify(data)}`);
-        lastError = data.error || { message: `HTTP ${res.status}` };
+        const errMsg = data?.error?.message || `HTTP ${res.status}`;
+        console.log(`[AI] FAIL ${endpoint}: ${errMsg}`);
+        allErrors.push({ endpoint, status: res.status, error: errMsg });
         continue;
       }
 
-      // Extract text from Google's response format
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) {
-        lastError = { message: 'Empty AI response from ' + endpoint };
+        allErrors.push({ endpoint, error: 'Empty response' });
         continue;
       }
 
@@ -82,15 +82,16 @@ Format the output cleanly in Markdown. No greeting or filler text — just the m
       };
 
     } catch (err) {
-      console.log(`[AI] Fetch error for ${endpoint}: ${err.message}`);
-      lastError = { message: err.message };
+      allErrors.push({ endpoint, error: err.message });
     }
   }
 
+  // Return ALL errors so the UI can show exactly what failed
   return {
     statusCode: 500,
     body: JSON.stringify({
-      error: lastError ? (lastError.message || JSON.stringify(lastError)) : 'All AI models failed.',
+      error: 'All AI models failed. See details for each attempt.',
+      details: JSON.stringify(allErrors, null, 2),
     }),
   };
 };
