@@ -43,8 +43,12 @@ export const handler: Handler = async (event, context) => {
     
     Format the output cleanly in Markdown. Do not include any greeting or conversational filler—just output the markdown directly.`;
 
-    // Try a series of models in case one is restricted or missing on this specific API key
-    const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
+    // Current model names as of 2025 — old names (gemini-pro, gemini-1.5-flash) are deprecated
+    const modelsToTry = [
+      'gemini-2.0-flash',
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-pro-latest',
+    ];
     let result;
     let lastError;
 
