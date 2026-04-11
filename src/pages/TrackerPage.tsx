@@ -89,29 +89,30 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdate
           </button>
         </div>
       ) : viewMode === 'list' ? (
-        <JobList jobs={filteredJobs} onDeleteJob={onDeleteJob} onEditJob={onEditJob} onViewJob={setViewJob} />
+        <JobList jobs={filteredJobs} onDeleteJob={onDeleteJob} onEditJob={onEditJob} onViewJob={(job) => setViewJobId(job.id)} />
       ) : (
         <KanbanBoard 
           jobs={filteredJobs} 
           onUpdateJob={onUpdateJob}
           onDeleteJob={onDeleteJob}
           onEditJob={onEditJob}
-          onViewJob={setViewJob}
+          onViewJob={(job) => setViewJobId(job.id)}
         />
       )}
 
-      {viewJob && (
+      {activeViewJob && (
         <JobDetailModal
           job={{
-            title: viewJob.position,
-            company: viewJob.company,
-            status: viewJob.status,
-            date: viewJob.date,
-            notes: viewJob.notes,
-            aiInterviewPrep: viewJob.aiInterviewPrep,
-            resumeUrl: viewJob.resumeUrl,
-            coverLetterUrl: viewJob.coverLetterUrl,
-            interviewDate: viewJob.interviewDate
+            title: activeViewJob.position,
+            company: activeViewJob.company,
+            status: activeViewJob.status,
+            location: activeViewJob.location,
+            date: activeViewJob.date,
+            notes: activeViewJob.notes,
+            aiInterviewPrep: activeViewJob.aiInterviewPrep,
+            resumeUrl: activeViewJob.resumeUrl,
+            coverLetterUrl: activeViewJob.coverLetterUrl,
+            interviewDate: activeViewJob.interviewDate
           }}
           onClose={handleCloseModal}
           onUpdateJob={onUpdateJob}

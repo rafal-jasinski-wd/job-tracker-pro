@@ -182,7 +182,7 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
                   <input
                     type="datetime-local"
                     className="form-input"
-                    value={job.interviewDate || ''}
+                    value={job.interviewDate ? job.interviewDate.slice(0, 16) : ''}
                     onChange={(e) => {
                       if (onUpdateJob) onUpdateJob({ ...job, interviewDate: e.target.value });
                     }}

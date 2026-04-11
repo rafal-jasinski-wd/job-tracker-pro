@@ -177,7 +177,7 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
               </label>
               <input
                 type="datetime-local"
-                value={interviewDate}
+                value={interviewDate ? interviewDate.slice(0, 16) : ''}
                 onChange={(e) => setInterviewDate(e.target.value)}
                 className="form-input"
                 style={{ marginTop: '0.5rem' }}
