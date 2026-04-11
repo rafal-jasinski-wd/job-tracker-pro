@@ -8,4 +8,6 @@ export interface Job {
   link?: string;
   type?: string;
   aiInterviewPrep?: string;
+  resumeUrl?: string;
+  coverLetterUrl?: string;
 }

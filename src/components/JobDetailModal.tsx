@@ -14,6 +14,8 @@ export interface JobDetailData {
   link?: string;
   type?: string;
   aiInterviewPrep?: string;
+  resumeUrl?: string;
+  coverLetterUrl?: string;
 }
 
 interface JobDetailModalProps {
@@ -25,6 +27,7 @@ interface JobDetailModalProps {
 import { generateMockInterview } from '../services/aiApi';
 import ReactMarkdown from 'react-markdown';
 import { Sparkles, Loader2 } from 'lucide-react';
+import { ResumeVault } from './ResumeVault';
 
 export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -150,6 +153,14 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
               </div>
             </div>
           )}
+
+          <ResumeVault
+            resumeUrl={job.resumeUrl}
+            coverLetterUrl={job.coverLetterUrl}
+            onSave={(data) => {
+              if (onUpdateJob) onUpdateJob({ ...job, ...data });
+            }}
+          />
 
           <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
