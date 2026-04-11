@@ -172,34 +172,12 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
           />
 
           {job.status === 'interview' && (
-            <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-              <h4 className="modal-section-title" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Calendar size={18} /> Schedule Interview
-              </h4>
-              <div className="modal-content-box" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <label className="form-label" style={{ marginBottom: '0.4rem', display: 'block' }}>Date & Time</label>
-                  <input
-                    type="datetime-local"
-                    className="form-input"
-                    value={job.interviewDate ? job.interviewDate.slice(0, 16) : ''}
-                    onChange={(e) => {
-                      if (onUpdateJob) onUpdateJob({ ...job, interviewDate: e.target.value });
-                    }}
-                    style={{ width: '100%' }}
-                  />
-                </div>
-                {job.interviewDate && (
-                   <button 
-                    onClick={() => { if (onUpdateJob) onUpdateJob({ ...job, interviewDate: undefined }); }}
-                    className="btn btn--ghost"
-                    style={{ marginTop: '1.4rem', color: '#ef4444' }}
-                   >
-                     Clear
-                   </button>
-                )}
-              </div>
-            </div>
+            <InterviewScheduler 
+              initialDate={job.interviewDate} 
+              onSave={(date) => {
+                if (onUpdateJob) onUpdateJob({ ...job, interviewDate: date });
+              }} 
+            />
           )}
 
           <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
@@ -291,5 +269,66 @@ const CopyButton = ({ text }: { text: string }) => {
       {copied ? <Check size={14} /> : <Copy size={14} />}
       {copied ? 'Copied!' : 'Copy'}
     </button>
+  );
+};
+
+const InterviewScheduler = ({ initialDate, onSave }: { initialDate?: string, onSave: (date: string | undefined) => void }) => {
+  const [tempDate, setTempDate] = useState(initialDate || '');
+  const [isSaved, setIsSaved] = useState(true);
+
+  // Sync with prop changes
+  useEffect(() => {
+    setTempDate(initialDate || '');
+    setIsSaved(true);
+  }, [initialDate]);
+
+  const handleUpdate = () => {
+    onSave(tempDate || undefined);
+    setIsSaved(true);
+  };
+
+  const handleChange = (val: string) => {
+    setTempDate(val);
+    setIsSaved(val === (initialDate || ''));
+  };
+
+  return (
+    <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+      <h4 className="modal-section-title" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Calendar size={18} /> Schedule Interview
+      </h4>
+      <div className="modal-content-box" style={{ padding: '1rem', display: 'flex', alignItems: 'flex-end', gap: '0.75rem' }}>
+        <div style={{ flex: 1 }}>
+          <label className="form-label" style={{ marginBottom: '0.4rem', display: 'block' }}>Date & Time</label>
+          <input
+            type="datetime-local"
+            className="form-input"
+            value={tempDate ? tempDate.slice(0, 16) : ''}
+            onChange={(e) => handleChange(e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button 
+            onClick={handleUpdate}
+            disabled={isSaved}
+            className={`btn ${isSaved ? 'btn--ghost' : ''}`}
+            style={{ minWidth: '100px' }}
+          >
+            {isSaved ? <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Check size={16} /> Saved</span> : 'Set Date'}
+          </button>
+          {tempDate && (
+            <button 
+              onClick={() => { setTempDate(''); onSave(undefined); }}
+              className="btn btn--ghost"
+              style={{ color: '#ef4444', padding: '0.6rem' }}
+              title="Clear Schedule"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
