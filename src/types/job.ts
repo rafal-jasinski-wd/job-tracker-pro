@@ -3,6 +3,7 @@ export interface Job {
   company: string;
   position: string;
   status: 'applied' | 'interview' | 'offer' | 'rejected';
+  location?: string;
   date: string;
   notes?: string;
   link?: string;

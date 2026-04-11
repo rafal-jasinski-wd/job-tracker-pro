@@ -18,11 +18,16 @@ interface TrackerPageProps {
 export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdateJob }: TrackerPageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<Job['status'] | 'all'>('all');
-  const [viewJob, setViewJob] = useState<Job | null>(null);
+  const [viewJobId, setViewJobId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
 
   // Stable reference — avoids unnecessary re-renders of the modal on unrelated state changes
-  const handleCloseModal = useCallback(() => setViewJob(null), []);
+  const handleCloseModal = useCallback(() => setViewJobId(null), []);
+
+  const activeViewJob = useMemo(() => {
+    if (!viewJobId) return null;
+    return jobs.find(j => j.id === viewJobId) || null;
+  }, [jobs, viewJobId]);
 
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
