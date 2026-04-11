@@ -134,7 +134,7 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
                 className={`badge ${job.status}`} 
                 value={job.status} 
                 onChange={(e) => { if (onUpdateJob) onUpdateJob({ ...job, status: e.target.value }); }}
-                style={{ border: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '1rem', fontBasis: 'auto' }}
+                style={{ border: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '1rem' }}
               >
                 <option value="applied">Applied</option>
                 <option value="interview">Interview</option>

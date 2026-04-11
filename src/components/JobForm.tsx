@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Job } from '../types/job';
-import { X } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 
 interface JobFormProps {
   initialData?: Job;
@@ -65,6 +65,7 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
     const newJob: Job = {
       id: initialData?.id || (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString()),
       company: company.trim(),
+      position: position.trim(),
       status,
       date,
       notes: notes.trim(),
