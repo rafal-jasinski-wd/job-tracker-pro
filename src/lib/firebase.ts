@@ -12,20 +12,33 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Log a warning if config is missing (common issue on Netlify/Vercel)
-if (!firebaseConfig.apiKey) {
-  console.error(
-    "🔥 Firebase Configuration Error: VITE_FIREBASE_API_KEY is missing!\n" +
-    "If you are on Netlify, please add your VITE_ environment variables to the Site Settings dashboard."
+// Configuration validation
+if (!firebaseConfig.apiKey && typeof window !== 'undefined') {
+  console.warn(
+    "🔥 Firebase Configuration Warning: VITE_FIREBASE_API_KEY is missing!\n" +
+    "The app will load but database features will be disabled. Check your Netlify environment variables."
   );
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+let auth: any;
+let googleProvider: any;
+let db: any;
 
-// Initialize Auth
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+try {
+  // Initialize Firebase
+  app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
-export const db = getFirestore(app);
+  // Initialize Auth
+  auth = getAuth(app);
+  googleProvider = new GoogleAuthProvider();
+
+  // Initialize Firestore
+  db = getFirestore(app);
+} catch (error) {
+  console.error("🔥 Firebase Failed to Initialize:", error);
+  // We export these as undefined so the rest of the app can handle the "Not Connected" state 
+  // gracefully instead of crashing the whole browser bundle.
+}
+
+export { auth, googleProvider, db };

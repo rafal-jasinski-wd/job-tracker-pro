@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Tabs } from './components/Tabs';
 import { JobForm } from './components/JobForm';
@@ -11,12 +11,13 @@ import type { JoobleJob } from './services/joobleApi';
 import { mapApiJobToJob } from './utils/mappers';
 import { Footer } from './components/Footer';
 import { AuthPage } from './pages/AuthPage';
-import './index.css';
 
-// Pages are lazy-loaded to reduce the initial JS bundle size
-const TrackerPage = lazy(() => import('./pages/TrackerPage').then(m => ({ default: m.TrackerPage })));
-const JobsPage    = lazy(() => import('./pages/JobsPage').then(m => ({ default: m.JobsPage })));
-const InsightsPage = lazy(() => import('./pages/InsightsPage').then(m => ({ default: m.InsightsPage })));
+// Static imports for production stability (resolves potential chunk loading issues)
+import { TrackerPage } from './pages/TrackerPage';
+import { JobsPage } from './pages/JobsPage';
+import { InsightsPage } from './pages/InsightsPage';
+
+import './index.css';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
@@ -107,12 +108,11 @@ function App() {
       <Header theme={theme} onThemeChange={setTheme} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} onAddClick={openFormForNew} />
 
-      {/* Show a blank shell while the page chunk loads or data loads */}
-      <Suspense fallback={<div className="main-content empty-state empty-state--min-h-50" />}>
+      <main>
         {jobsLoading ? (
-           <div className="main-content empty-state empty-state--min-h-50">
-             <p className="search-scanning-text">Syncing from cloud...</p>
-           </div>
+            <div className="main-content empty-state empty-state--min-h-50">
+              <p className="search-scanning-text">Syncing from cloud...</p>
+            </div>
         ) : activeTab === 'tracker' ? (
           <TrackerPage
             jobs={jobs}
@@ -126,7 +126,7 @@ function App() {
         ) : (
           <JobsPage onSaveJob={handleSaveFromSearch} />
         )}
-      </Suspense>
+      </main>
 
       {isFormOpen && (
         <JobForm
