@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin, Building2, Bell } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Building2, Bell } from 'lucide-react';
 import type { Job } from '../types/job';
 
 interface SchedulePageProps {
@@ -45,7 +45,6 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
 
     // Current month days
     for (let i = 1; i <= totalDays; i++) {
-       const dayDate = new Date(year, month, i);
        const jobsForDay = scheduledJobs.filter(job => {
          const jDate = new Date(job.interviewDate!);
          return jDate.getDate() === i && jDate.getMonth() === month && jDate.getFullYear() === year;
