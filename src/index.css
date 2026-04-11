@@ -260,6 +260,23 @@ h1, h2, h3, h4, h5, h6, .logo {
   transform: scale(0.97);
 }
 
+.btn--ghost {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.btn--ghost:hover {
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  border-color: var(--primary);
+}
+
+.btn--success {
+  background-color: #22c55e;
+  color: white;
+}
+
 /* Badges */
 .badge {
   display: inline-flex;

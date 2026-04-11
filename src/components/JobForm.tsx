@@ -15,6 +15,7 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
   const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState(initialData?.notes || '');
   const [link, setLink] = useState(initialData?.link || '');
+  const [interviewDate, setInterviewDate] = useState(initialData?.interviewDate || '');
   const [error, setError] = useState('');
   // Guard against double-submit on rapid button clicks
   const [submitting, setSubmitting] = useState(false);
@@ -64,11 +65,11 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
     const newJob: Job = {
       id: initialData?.id || (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString()),
       company: company.trim(),
-      position: position.trim(),
       status,
       date,
       notes: notes.trim(),
-      link: link.trim()
+      link: link.trim(),
+      interviewDate: status === 'interview' ? interviewDate : undefined
     };
 
     onSubmit(newJob);
@@ -167,6 +168,21 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
               placeholder="https://jooble.org/..."
             />
           </div>
+
+          {status === 'interview' && (
+            <div style={{ padding: '1rem', backgroundColor: 'var(--bg-accent)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+              <label className="form-label" style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Calendar size={14} /> Schedule Interview
+              </label>
+              <input
+                type="datetime-local"
+                value={interviewDate}
+                onChange={(e) => setInterviewDate(e.target.value)}
+                className="form-input"
+                style={{ marginTop: '0.5rem' }}
+              />
+            </div>
+          )}
 
           <div className="form-actions">
             <button type="button" onClick={onCancel} className="btn form-btn-cancel">

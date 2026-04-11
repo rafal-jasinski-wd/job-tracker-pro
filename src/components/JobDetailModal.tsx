@@ -130,9 +130,17 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
               <span className="badge modal-badge">{job.type}</span>
             )}
             {job.status && (
-              <span className={`badge ${job.status}`}>
-                {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-              </span>
+              <select 
+                className={`badge ${job.status}`} 
+                value={job.status} 
+                onChange={(e) => { if (onUpdateJob) onUpdateJob({ ...job, status: e.target.value }); }}
+                style={{ border: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '1rem', fontBasis: 'auto' }}
+              >
+                <option value="applied">Applied</option>
+                <option value="interview">Interview</option>
+                <option value="offer">Offer</option>
+                <option value="rejected">Rejected</option>
+              </select>
             )}
           </div>
 
@@ -199,9 +207,20 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
               <h4 className="modal-section-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
                 <Sparkles size={18} /> AI Interview Prep
               </h4>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
                 {localAiText && (
-                  <CopyButton text={localAiText} />
+                  <>
+                    <CopyButton text={localAiText} />
+                    <button 
+                      onClick={handleGenerateAI} 
+                      disabled={isGeneratingAI}
+                      className="btn btn--ghost" 
+                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                      title="Generate new questions"
+                    >
+                      {isGeneratingAI ? <Loader2 size={16} className="spinner" /> : 'Regenerate'}
+                    </button>
+                  </>
                 )}
                 {!localAiText && (
                   <button 
