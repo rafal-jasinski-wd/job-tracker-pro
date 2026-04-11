@@ -25,6 +25,13 @@ export const JobItem = memo<JobItemProps>(({ job, onDeleteJob, onEditJob, onView
         <span>{job.company}</span>
       </div>
 
+      {job.interviewDate && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.8rem', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600, backgroundColor: 'rgba(56, 189, 248, 0.1)', padding: '0.3rem 0.6rem', borderRadius: '6px', width: 'fit-content' }}>
+          <Clock size={14} />
+          Scheduled: {new Date(job.interviewDate).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(job.interviewDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
+      )}
+
       {/* Only render link if it's a safe http(s) URL */}
       {isSafeUrl(job.link) && (
         <div className="ji-link-row">

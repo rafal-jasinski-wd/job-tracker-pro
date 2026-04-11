@@ -10,4 +10,5 @@ export interface Job {
   aiInterviewPrep?: string;
   resumeUrl?: string;
   coverLetterUrl?: string;
+  interviewDate?: string;
 }

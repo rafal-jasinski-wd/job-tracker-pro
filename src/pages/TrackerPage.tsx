@@ -110,7 +110,8 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdate
             notes: viewJob.notes,
             aiInterviewPrep: viewJob.aiInterviewPrep,
             resumeUrl: viewJob.resumeUrl,
-            coverLetterUrl: viewJob.coverLetterUrl
+            coverLetterUrl: viewJob.coverLetterUrl,
+            interviewDate: viewJob.interviewDate
           }}
           onClose={handleCloseModal}
           onUpdateJob={onUpdateJob}

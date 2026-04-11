@@ -17,9 +17,19 @@ export function useFirestoreJobs() {
       return;
     }
 
+    setLoading(true);
+    
+    // Defensive check: if Firebase failed to initialize (e.g. missing API key), 
+    // db will be undefined from our hardening in firebase.ts. 
+    // We return early instead of crashing the whole browser bundle.
+    if (!db) {
+      console.warn("Firestore Database not available. Check your internet or configuration.");
+      setLoading(false);
+      return;
+    }
+
     const q = query(collection(db, `users/${user.uid}/jobs`));
     
-    setLoading(true);
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedJobs: Job[] = [];
       querySnapshot.forEach((doc) => {
@@ -54,7 +64,7 @@ export function useFirestoreJobs() {
 
       try {
         const localJobs: Job[] = JSON.parse(localJobsStr);
-        if (localJobs.length > 0) {
+        if (localJobs.length > 0 && db) {
           // Upload local jobs to Firestore in one batch
           const batch = writeBatch(db);
           
@@ -88,6 +98,7 @@ export function useFirestoreJobs() {
 
     const currentJobs = jobsRef.current;
     const nextJobs = typeof action === 'function' ? action(currentJobs) : action;
+    if (!db) return;
 
     // Detect what changed by comparing arrays
     const batch = writeBatch(db);

@@ -1,8 +1,8 @@
 import { Plus } from 'lucide-react';
 
 interface TabsProps {
-  activeTab: 'tracker' | 'jobs' | 'insights';
-  onTabChange: (tab: 'tracker' | 'jobs' | 'insights') => void;
+  activeTab: 'tracker' | 'jobs' | 'schedule' | 'insights';
+  onTabChange: (tab: 'tracker' | 'jobs' | 'schedule' | 'insights') => void;
   onAddClick?: () => void;
 }
 
@@ -21,6 +21,12 @@ export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
           onClick={() => onTabChange('jobs')}
         >
           Find Jobs
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+          onClick={() => onTabChange('schedule')}
+        >
+          Schedule
         </button>
         <button
           className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}

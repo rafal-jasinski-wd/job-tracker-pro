@@ -46,6 +46,13 @@ export const KanbanCard = memo(({ job, index, onDeleteJob, onEditJob, onViewJob 
             <Building2 size={12} className="icon-mr" />
             {job.company}
           </div>
+
+          {job.interviewDate && (
+            <div style={{ marginTop: '0.6rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Calendar size={12} />
+              Interview: {new Date(job.interviewDate).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+            </div>
+          )}
           
           <div className="kanban-card-footer">
             <span className="kanban-card-date">

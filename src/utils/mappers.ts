@@ -17,6 +17,9 @@ export const mapApiJobToJob = (apiJob: JoobleJob): Job => {
     // Default to today's date
     date: new Date().toISOString().split('T')[0],
     notes: `Saved via Search.\n\nLocation: ${apiJob.location}\n\nDescription:\n${cleanSnippet}`,
-    link: apiJob.link
+    link: apiJob.link,
+    resumeUrl: undefined,
+    coverLetterUrl: undefined,
+    interviewDate: undefined
   };
 };

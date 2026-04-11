@@ -16,12 +16,13 @@ import { AuthPage } from './pages/AuthPage';
 import { TrackerPage } from './pages/TrackerPage';
 import { JobsPage } from './pages/JobsPage';
 import { InsightsPage } from './pages/InsightsPage';
+import { SchedulePage } from './pages/SchedulePage';
 
 import './index.css';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'tracker' | 'jobs' | 'insights'>('tracker');
+  const [activeTab, setActiveTab] = useState<'tracker' | 'jobs' | 'schedule' | 'insights'>('tracker');
   const [jobs, setJobs, jobsLoading] = useFirestoreJobs();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
@@ -121,6 +122,8 @@ function App() {
             onEditJob={openFormForEdit}
             onUpdateJob={handleUpdateJob}
           />
+        ) : activeTab === 'schedule' ? (
+          <SchedulePage jobs={jobs} />
         ) : activeTab === 'insights' ? (
           <InsightsPage jobs={jobs} />
         ) : (

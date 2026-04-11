@@ -16,6 +16,7 @@ export interface JobDetailData {
   aiInterviewPrep?: string;
   resumeUrl?: string;
   coverLetterUrl?: string;
+  interviewDate?: string;
 }
 
 interface JobDetailModalProps {
@@ -26,7 +27,7 @@ interface JobDetailModalProps {
 
 import { generateMockInterview } from '../services/aiApi';
 import ReactMarkdown from 'react-markdown';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Copy, Check } from 'lucide-react';
 import { ResumeVault } from './ResumeVault';
 
 export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProps) => {
@@ -162,21 +163,57 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
             }}
           />
 
+          {job.status === 'interview' && (
+            <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <h4 className="modal-section-title" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Calendar size={18} /> Schedule Interview
+              </h4>
+              <div className="modal-content-box" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <label className="form-label" style={{ marginBottom: '0.4rem', display: 'block' }}>Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    className="form-input"
+                    value={job.interviewDate || ''}
+                    onChange={(e) => {
+                      if (onUpdateJob) onUpdateJob({ ...job, interviewDate: e.target.value });
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                </div>
+                {job.interviewDate && (
+                   <button 
+                    onClick={() => { if (onUpdateJob) onUpdateJob({ ...job, interviewDate: undefined }); }}
+                    className="btn btn--ghost"
+                    style={{ marginTop: '1.4rem', color: '#ef4444' }}
+                   >
+                     Clear
+                   </button>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
               <h4 className="modal-section-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
                 <Sparkles size={18} /> AI Interview Prep
               </h4>
-              {!localAiText && (
-                <button 
-                  onClick={handleGenerateAI} 
-                  disabled={isGeneratingAI}
-                  className="btn" 
-                  style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
-                >
-                  {isGeneratingAI ? <Loader2 size={16} className="spinner" /> : 'Generate Mock Interview'}
-                </button>
-              )}
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {localAiText && (
+                  <CopyButton text={localAiText} />
+                )}
+                {!localAiText && (
+                  <button 
+                    onClick={handleGenerateAI} 
+                    disabled={isGeneratingAI}
+                    className="btn" 
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                  >
+                    {isGeneratingAI ? <Loader2 size={16} className="spinner" /> : 'Generate Mock Interview'}
+                  </button>
+                )}
+              </div>
             </div>
 
             {aiError && (
@@ -212,5 +249,28 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
         </div>
       </div>
     </div>
+  );
+};
+
+const CopyButton = ({ text }: { text: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`btn ${copied ? 'btn--success' : 'btn--ghost'}`}
+      style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+      title="Copy to clipboard"
+    >
+      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? 'Copied!' : 'Copy'}
+    </button>
   );
 };

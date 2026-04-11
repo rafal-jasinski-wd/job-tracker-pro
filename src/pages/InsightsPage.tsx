@@ -57,10 +57,17 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
     }));
   }, [jobs]);
 
+  const upcomingInterviewCount = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return jobs.filter(j => j.interviewDate && new Date(j.interviewDate) >= today).length;
+  }, [jobs]);
+
   const totalInterviews = funnelData.find(v => v.name === 'Interview')?.value || 0;
   const totalOffers = funnelData.find(v => v.name === 'Offer')?.value || 0;
   const metrics = [
     { label: 'Total Tracked', value: jobs.length },
+    { label: 'Upcoming Interviews', value: upcomingInterviewCount },
     { label: 'Conversion to Interview', value: jobs.length ? Math.round((totalInterviews / jobs.length) * 100) + '%' : '0%' },
     { label: 'Total Offers', value: totalOffers }
   ];
