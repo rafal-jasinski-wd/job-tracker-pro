@@ -1,14 +1,18 @@
-// Uses raw fetch to call Google AI REST API — no SDK version issues
+// Groq AI Proxy — uses Groq's free OpenAI-compatible API
+// Model: llama-3.3-70b-versatile (free, fast, powerful)
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_KEY) {
+  const GROQ_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'GEMINI_API_KEY is not configured in Netlify Environment Variables.' })
+      body: JSON.stringify({ 
+        error: 'GROQ_API_KEY is not configured.',
+        details: 'Go to Netlify -> Site Settings -> Environment variables and add GROQ_API_KEY. Get your free key at console.groq.com'
+      })
     };
   }
 
@@ -27,71 +31,72 @@ exports.handler = async function(event, context) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Job title is required.' }) };
   }
 
-  const prompt = `You are an elite recruiter. The user is applying for the position of "${title}" at "${company}".
+  const userPrompt = `I am applying for the position of "${title}" at "${company}".
 
 Job description: ${description || 'Not provided.'}
-Personal notes: ${notes || 'None.'}
+My personal notes: ${notes || 'None.'}
 
-Generate an AI Mock Interview guide with:
+Please generate an AI Mock Interview guide with:
 1. 5 highly tailored interview questions for this specific role and company.
-2. 3 strategic tips to stand out and pass the interview.
+2. 3 strategic tips on how to stand out and pass the interview.
 
-Format the output cleanly in Markdown. No greeting or filler text — just the markdown.`;
+Format the output in clean Markdown. No greeting or intro — just the markdown content directly.`;
 
-  const requestBody = {
-    contents: [{ parts: [{ text: prompt }] }]
-  };
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an elite Silicon Valley recruiter and career coach. You help job seekers prepare for interviews by generating tailored interview questions and strategic advice. Always respond in clean, well-formatted Markdown.'
+          },
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1024,
+      }),
+    });
 
-  // Try multiple model endpoints — v1beta and v1, with current model names
-  const endpoints = [
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
-    'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent',
-    'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent',
-  ];
+    const data = await response.json();
 
-  const allErrors = [];
-
-  for (const endpoint of endpoints) {
-    try {
-      const res = await fetch(`${endpoint}?key=${GEMINI_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const errMsg = data?.error?.message || `HTTP ${res.status}`;
-        console.log(`[AI] FAIL ${endpoint}: ${errMsg}`);
-        allErrors.push({ endpoint, status: res.status, error: errMsg });
-        continue;
-      }
-
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) {
-        allErrors.push({ endpoint, error: 'Empty response' });
-        continue;
-      }
-
+    if (!response.ok) {
+      const errMsg = data?.error?.message || `Groq API error: HTTP ${response.status}`;
+      console.error('[Groq] Error:', errMsg);
       return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ result: text }),
+        statusCode: 500,
+        body: JSON.stringify({ error: errMsg }),
       };
-
-    } catch (err) {
-      allErrors.push({ endpoint, error: err.message });
     }
-  }
 
-  // Return ALL errors so the UI can show exactly what failed
-  return {
-    statusCode: 500,
-    body: JSON.stringify({
-      error: 'All AI models failed. See details for each attempt.',
-      details: JSON.stringify(allErrors, null, 2),
-    }),
-  };
+    const text = data?.choices?.[0]?.message?.content;
+
+    if (!text) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Groq returned an empty response.' }),
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ result: text }),
+    };
+
+  } catch (err) {
+    console.error('[Groq] Fetch error:', err.message);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message || 'Failed to reach Groq API.' }),
+    };
+  }
 };
