@@ -16,7 +16,7 @@ export const Footer = () => {
         <div className="footer-creator">
           <span className="footer-creator-text">Created by</span>
           <img
-            src="/creator-logo.png"
+            src="/creator-logo.webp"
             alt="Creator Logo"
             className="footer-logo"
             loading="lazy"

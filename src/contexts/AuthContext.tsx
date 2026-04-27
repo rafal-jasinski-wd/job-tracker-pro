@@ -30,6 +30,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -39,6 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const loginWithGoogle = async () => {
+    if (!auth || !googleProvider) throw new Error("Firebase Auth not initialized");
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -48,18 +53,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithEmail = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
     return signInWithEmailAndPassword(auth, email, pass).then(() => {});
   };
 
   const registerWithEmail = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
     return createUserWithEmailAndPassword(auth, email, pass).then(() => {});
   };
 
   const resetPassword = async (email: string) => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
     return sendPasswordResetEmail(auth, email);
   };
 
   const logout = async () => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
     try {
       await signOut(auth);
     } catch (error) {

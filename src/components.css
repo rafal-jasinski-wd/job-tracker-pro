@@ -154,7 +154,7 @@
   position: absolute;
   right: 1.25rem;
   top: 1.25rem;
-  transition: all 0.2s;
+  transition: background-color 0.2s, color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,6 +389,11 @@
   outline: none;
 }
 
+.filter-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
 .filter-select-wrap {
   display: flex;
   align-items: center;
@@ -407,6 +412,12 @@
   outline: none;
   padding: 0.5rem;
   cursor: pointer;
+}
+
+.filter-select:focus {
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+  border-radius: 4px;
 }
 
 /* ── Footer ───────────────────────────────────────────────── */
@@ -453,7 +464,7 @@
   border-radius: 8px;
   border: 1px solid var(--border);
   background-color: var(--bg-color);
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
 .footer-api-link:hover {
@@ -666,6 +677,11 @@
   cursor: pointer;
 }
 
+.search-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
 .search-btn-wrap {
   display: flex;
   height: 46px;
@@ -720,12 +736,6 @@
   margin-bottom: 1rem;
 }
 
-.btn--ghost {
-  background-color: transparent;
-  color: var(--text-main);
-  border: 1px solid var(--border);
-}
-
 /* ── TrackerPage empty states ─────────────────────────────── */
 .tracker-empty {
   padding: 3rem 2rem;
@@ -738,10 +748,7 @@
   align-items: center;
 }
 
-.tabs-list {
-  display: flex;
-  gap: 2rem;
-}
+/* tabs-list base styles defined in index.css */
 
 .tabs-add-btn {
   padding: 0.5rem 1rem;
@@ -766,7 +773,7 @@
   justify-content: center;
   padding: 0.65rem;
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .theme-btn:hover {
@@ -905,7 +912,7 @@ textarea.form-input {
   padding: 0.4rem 0.75rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
   display: flex;
   align-items: center;
 }
@@ -918,6 +925,28 @@ textarea.form-input {
   background-color: var(--surface);
   color: var(--primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tracker-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .tracker-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.modal-status-select {
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  padding-right: 1rem;
 }
 
 /* ── Kanban Board ─────────────────────────────────────────── */
@@ -951,12 +980,12 @@ textarea.form-input {
 }
 
 /* Special header accents based on status column */
-.kanban-column--applied .kanban-column-header { border-top: 3px solid #6b7280; border-top-left-radius: 12px; border-top-right-radius: 12px; }
-.kanban-column--interview .kanban-column-header { border-top: 3px solid #eab308; border-top-left-radius: 12px; border-top-right-radius: 12px; }
-.kanban-column--offer .kanban-column-header { border-top: 3px solid #22c55e; border-top-left-radius: 12px; border-top-right-radius: 12px; }
-.kanban-column--rejected .kanban-column-header { border-top: 3px solid #ef4444; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.kanban-column--applied .kanban-column__header { border-top: 3px solid #6b7280; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.kanban-column--interview .kanban-column__header { border-top: 3px solid #eab308; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.kanban-column--offer .kanban-column__header { border-top: 3px solid #22c55e; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.kanban-column--rejected .kanban-column__header { border-top: 3px solid #ef4444; border-top-left-radius: 12px; border-top-right-radius: 12px; }
 
-.kanban-column-header {
+.kanban-column__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -964,7 +993,7 @@ textarea.form-input {
   border-bottom: 1px solid var(--border);
 }
 
-.kanban-column-title {
+.kanban-column__title {
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
@@ -972,7 +1001,7 @@ textarea.form-input {
   letter-spacing: 0.5px;
 }
 
-.kanban-column-count {
+.kanban-column__count {
   background-color: var(--bg-color);
   border: 1px solid var(--border);
   color: var(--text-muted);
@@ -1023,14 +1052,14 @@ textarea.form-input {
   transform: scale(1.02);
 }
 
-.kanban-card-header {
+.kanban-card__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.5rem;
 }
 
-.kanban-card-title {
+.kanban-card__title {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0;
@@ -1039,7 +1068,7 @@ textarea.form-input {
   word-break: break-word;
 }
 
-.kanban-card-actions {
+.kanban-card__actions {
   display: flex;
   gap: 0.25rem;
   opacity: 0;
@@ -1069,14 +1098,14 @@ textarea.form-input {
   color: #ef4444;
 }
 
-.kanban-card-company {
+.kanban-card__company {
   font-size: 0.85rem;
   color: var(--text-muted);
   display: flex;
   align-items: center;
 }
 
-.kanban-card-footer {
+.kanban-card__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1086,20 +1115,12 @@ textarea.form-input {
   padding-top: 0.75rem;
 }
 
-.kanban-card-date {
+.kanban-card__date {
   display: flex;
   align-items: center;
 }
 
-/* AI Section Animations */
-.spinner {
-  animation: rotate 2s linear infinite;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+/* Spinner animation defined in index.css */
 
 @keyframes pulse {
   0% { opacity: 0.6; }
@@ -1110,4 +1131,53 @@ textarea.form-input {
 .skeleton-text {
   background: var(--border);
   border-radius: 4px;
+}
+
+/* ── Schedule Page ────────────────────────────────────────── */
+.calendar-cell {
+  min-height: 100px;
+}
+.calendar-event {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  background-color: color-mix(in srgb, #eab308 15%, transparent);
+  color: #eab308;
+  border-radius: 4px;
+  border-left: 2px solid #eab308;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.event-icon {
+  display: none;
+}
+.calendar-grid > div:nth-last-child(-n+7) {
+  border-bottom: none;
+}
+@media (max-width: 1024px) {
+  .schedule-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 850px) {
+  .calendar-cell {
+    min-height: 55px;
+  }
+  .calendar-event {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    margin: 2px auto;
+  }
+  .event-text {
+    display: none;
+  }
+  .event-icon {
+    display: flex;
+  }
 }

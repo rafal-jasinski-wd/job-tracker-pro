@@ -19,5 +19,16 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/firebase')) return 'vendor-firebase';
+            if (id.includes('node_modules/recharts')) return 'vendor-recharts';
+            if (id.includes('node_modules/@hello-pangea/dnd')) return 'vendor-dnd';
+          }
+        }
+      }
+    }
   };
 });

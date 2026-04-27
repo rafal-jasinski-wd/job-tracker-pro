@@ -73,7 +73,7 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
       <div className="schedule-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '2rem', marginTop: '2rem' }}>
         
         {/* Left Column: Calendar View */}
-        <section className="card" style={{ padding: '1.5rem' }}>
+        <section className="card" style={{ padding: '10px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <CalendarIcon size={20} className="text-secondary" />
@@ -88,7 +88,7 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
 
           <div className="calendar-grid" style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(7, 1fr)', 
+            gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', 
             border: '1px solid var(--border)',
             borderRadius: '12px',
             overflow: 'hidden'
@@ -99,8 +99,8 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
               </div>
             ))}
             {calendarDays.map((d, index) => (
-              <div key={index} style={{ 
-                minHeight: '100px', 
+              <div key={index} className="calendar-cell" style={{ 
+                minWidth: 0,
                 padding: '0.5rem', 
                 borderRight: (index + 1) % 7 === 0 ? 'none' : '1px solid var(--border)',
                 borderBottom: '1px solid var(--border)',
@@ -118,18 +118,9 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
                     </span>
                     <div style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                       {d.jobs.map(job => (
-                        <div key={job.id} style={{ 
-                          fontSize: '0.7rem', 
-                          padding: '0.2rem 0.4rem', 
-                          backgroundColor: 'rgba(56, 189, 248, 0.1)', 
-                          color: 'var(--primary)',
-                          borderRadius: '4px',
-                          borderLeft: '2px solid var(--primary)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }} title={`${job.position} at ${job.company}`}>
-                          {formatInterviewTime(job.interviewDate!)} {job.company}
+                        <div key={job.id} className="calendar-event" title={`${job.position} at ${job.company}`}>
+                          <span className="event-text">{formatInterviewTime(job.interviewDate!)} {job.company}</span>
+                          <span className="event-icon"><Building2 size={10} /></span>
                         </div>
                       ))}
                     </div>
@@ -178,16 +169,6 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
         </section>
       </div>
 
-      <style>{`
-        .calendar-grid > div:nth-last-child(-n+7) {
-          border-bottom: none;
-        }
-        @media (max-width: 1024px) {
-          .schedule-layout {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

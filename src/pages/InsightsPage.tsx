@@ -81,11 +81,11 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
   }
 
   return (
-    <div className="main-content" style={{ animation: 'var(--animate-fade)', padding: '1rem' }}>
+    <div className="main-content" style={{ animation: 'fadeIn 0.3s ease', padding: '1rem' }}>
       
-      <div className="insights-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+      <div className="insights-metrics-grid">
         {metrics.map((metric, i) => (
-          <div key={i} className="card" style={{ padding: '1.5rem', textAlign: 'center', borderTop: '2px solid var(--primary)' }}>
+          <div key={i} className="card" style={{ padding: '1.5rem', textAlign: 'center', borderTop: '2px solid var(--primary)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{metric.label}</div>
             <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{metric.value}</div>
           </div>
@@ -116,8 +116,8 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', borderRadius: '8px' }}
-                  itemStyle={{ color: 'var(--text)' }}
+                  contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', borderRadius: '8px' }}
+                  itemStyle={{ color: 'var(--text-main)' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -135,7 +135,7 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
                 <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip 
                   cursor={{ fill: 'var(--border)', opacity: 0.4 }}
-                  contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', borderRadius: '8px' }}
                 />
                 <Bar dataKey="apps" fill="var(--primary)" radius={[4, 4, 0, 0]} name="Applications Sent" />
               </BarChart>

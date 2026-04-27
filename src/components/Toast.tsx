@@ -8,7 +8,7 @@ interface ToastProps {
 /** Memoized toast notification — renders only when message prop changes. */
 export const Toast = memo(({ message }: ToastProps) => {
   return (
-    <div className="toast">
+    <div className="toast" role="status" aria-live="polite">
       <CheckCircle2 color="var(--primary)" size={20} />
       <span>{message}</span>
     </div>

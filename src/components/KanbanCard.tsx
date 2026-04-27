@@ -28,21 +28,21 @@ export const KanbanCard = memo(({ job, index, onDeleteJob, onEditJob, onViewJob 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <div className="kanban-card-header">
-            <h4 className="kanban-card-title">{job.position}</h4>
-            <div className="kanban-card-actions">
-              <button className="kanban-action-btn" onClick={() => onViewJob(job)} title="View Detail">
+          <div className="kanban-card__header">
+            <h4 className="kanban-card__title">{job.position}</h4>
+            <div className="kanban-card__actions">
+              <button className="kanban-action-btn" onClick={() => onViewJob(job)} title="View Detail" aria-label="View Details">
                 <Eye size={14} />
               </button>
-              <button className="kanban-action-btn" onClick={() => onEditJob(job)} title="Edit">
+              <button className="kanban-action-btn" onClick={() => onEditJob(job)} title="Edit" aria-label="Edit Job">
                 <Pencil size={14} />
               </button>
-              <button className="kanban-action-btn delete" onClick={() => onDeleteJob(job.id)} title="Delete">
+              <button className="kanban-action-btn delete" onClick={() => onDeleteJob(job.id)} title="Delete" aria-label="Delete Job">
                 <Trash2 size={14} />
               </button>
             </div>
           </div>
-          <div className="kanban-card-company">
+          <div className="kanban-card__company">
             <Building2 size={12} className="icon-mr" />
             {job.company}
           </div>
@@ -54,8 +54,8 @@ export const KanbanCard = memo(({ job, index, onDeleteJob, onEditJob, onViewJob 
             </div>
           )}
           
-          <div className="kanban-card-footer">
-            <span className="kanban-card-date">
+          <div className="kanban-card__footer">
+            <span className="kanban-card__date">
               <Calendar size={12} className="icon-mr" />
               {formattedDate}
             </span>

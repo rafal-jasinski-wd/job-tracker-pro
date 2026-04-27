@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import type { Auth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import type { Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,9 +23,9 @@ if (!firebaseConfig.apiKey && typeof window !== 'undefined') {
 }
 
 let app;
-let auth: any;
-let googleProvider: any;
-let db: any;
+let auth: Auth | undefined;
+let googleProvider: GoogleAuthProvider | undefined;
+let db: Firestore | undefined;
 
 try {
   // Initialize Firebase

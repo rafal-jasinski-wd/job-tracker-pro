@@ -69,12 +69,12 @@ export function useFirestoreJobs() {
           const batch = writeBatch(db);
           
           localJobs.forEach(job => {
-            const jobRef = doc(db, `users/${user.uid}/jobs`, job.id);
-            batch.set(jobRef, job);
+            const cleanJob = Object.fromEntries(Object.entries(job).filter(([, v]) => v !== undefined));
+            const jobRef = doc(db!, `users/${user.uid}/jobs`, job.id);
+            batch.set(jobRef, cleanJob);
           });
           
           await batch.commit();
-          console.log(`Migrated ${localJobs.length} local jobs to Firebase cloud!`);
         }
         window.localStorage.setItem('jobtrackr_synced', 'true');
       } catch (error) {
@@ -117,7 +117,9 @@ export function useFirestoreJobs() {
     for (const [id, job] of nextMap.entries()) {
       const current = currentMap.get(id);
       if (!current || JSON.stringify(current) !== JSON.stringify(job)) {
-           batch.set(doc(db, `users/${user.uid}/jobs`, id), job);
+           // Firestore throws an error if properties are undefined. Strip them out.
+           const cleanJob = Object.fromEntries(Object.entries(job).filter(([, v]) => v !== undefined));
+           batch.set(doc(db, `users/${user.uid}/jobs`, id), cleanJob);
       }
     }
 

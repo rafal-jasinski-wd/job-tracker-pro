@@ -43,8 +43,8 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdate
     <div className="main-content">
       <h1 className="page-title">Applications Tracker</h1>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p className="page-subtitle">Manage your active job applications and keep track of your progress.</p>
+      <div className="tracker-header-container">
+        <p className="page-subtitle" style={{ margin: 0 }}>Manage your active job applications and keep track of your progress.</p>
         
         {jobs.length > 0 && (
           <div className="view-toggle">
@@ -120,7 +120,17 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdate
             interviewDate: activeViewJob.interviewDate
           }}
           onClose={handleCloseModal}
-          onUpdateJob={onUpdateJob}
+          onUpdateJob={(updatedData) => {
+            if (!activeViewJob) return;
+            onUpdateJob({
+              ...activeViewJob,
+              status: (updatedData.status as Job['status']) || activeViewJob.status,
+              aiInterviewPrep: updatedData.aiInterviewPrep,
+              resumeUrl: updatedData.resumeUrl,
+              coverLetterUrl: updatedData.coverLetterUrl,
+              interviewDate: updatedData.interviewDate
+            });
+          }}
         />
       )}
     </div>

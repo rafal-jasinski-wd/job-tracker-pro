@@ -22,7 +22,7 @@ export interface JobDetailData {
 interface JobDetailModalProps {
   job: JobDetailData;
   onClose: () => void;
-  onUpdateJob?: (job: any) => void;
+  onUpdateJob?: (job: Partial<JobDetailData>) => void;
 }
 
 import { generateMockInterview } from '../services/aiApi';
@@ -46,8 +46,8 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
       if (onUpdateJob) {
         onUpdateJob({ ...job, aiInterviewPrep: result });
       }
-    } catch (err: any) {
-      setAiError(err.message || 'Failed to generate prep.');
+    } catch (err: unknown) {
+      setAiError(err instanceof Error ? err.message : 'Failed to generate prep.');
     } finally {
       setIsGeneratingAI(false);
     }
@@ -131,10 +131,9 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
             )}
             {job.status && (
               <select 
-                className={`badge ${job.status}`} 
+                className={`badge badge--${job.status} modal-status-select`} 
                 value={job.status} 
                 onChange={(e) => { if (onUpdateJob) onUpdateJob({ ...job, status: e.target.value }); }}
-                style={{ border: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '1rem' }}
               >
                 <option value="applied">Applied</option>
                 <option value="interview">Interview</option>

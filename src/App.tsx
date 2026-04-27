@@ -12,13 +12,14 @@ import { mapApiJobToJob } from './utils/mappers';
 import { Footer } from './components/Footer';
 import { AuthPage } from './pages/AuthPage';
 
-// Static imports for production stability (resolves potential chunk loading issues)
-import { TrackerPage } from './pages/TrackerPage';
-import { JobsPage } from './pages/JobsPage';
-import { InsightsPage } from './pages/InsightsPage';
-import { SchedulePage } from './pages/SchedulePage';
+import { Suspense, lazy } from 'react';
+import { Loader2 } from 'lucide-react';
 
-import './index.css';
+// Lazy loaded routes for bundle splitting
+const TrackerPage = lazy(() => import('./pages/TrackerPage').then(module => ({ default: module.TrackerPage })));
+const JobsPage = lazy(() => import('./pages/JobsPage').then(module => ({ default: module.JobsPage })));
+const InsightsPage = lazy(() => import('./pages/InsightsPage').then(module => ({ default: module.InsightsPage })));
+const SchedulePage = lazy(() => import('./pages/SchedulePage').then(module => ({ default: module.SchedulePage })));
 
 function App() {
   const { user, loading: authLoading } = useAuth();
@@ -27,6 +28,7 @@ function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [theme, setTheme] = useTheme();
 
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -43,6 +45,26 @@ function App() {
       if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, []);
+
+  // Handle offline/online status
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      showToast('Connection restored. Syncing data...');
+    };
+    const handleOffline = () => {
+      setIsOffline(true);
+      showToast('You are offline. Changes will sync when reconnected.');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [showToast]);
 
   const handleSaveFromSearch = useCallback((joobleJob: JoobleJob) => {
     const newJob = mapApiJobToJob(joobleJob);
@@ -106,6 +128,11 @@ function App() {
 
   return (
     <div className="app-container">
+      {isOffline && (
+        <div style={{ backgroundColor: '#ef4444', color: 'white', textAlign: 'center', padding: '0.5rem', fontSize: '0.85rem', fontWeight: 600 }}>
+          You are currently offline. Changes are saved locally.
+        </div>
+      )}
       <Header theme={theme} onThemeChange={setTheme} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} onAddClick={openFormForNew} />
 
@@ -114,20 +141,28 @@ function App() {
             <div className="main-content empty-state empty-state--min-h-50">
               <p className="search-scanning-text">Syncing from cloud...</p>
             </div>
-        ) : activeTab === 'tracker' ? (
-          <TrackerPage
-            jobs={jobs}
-            onAddClick={openFormForNew}
-            onDeleteJob={handleDeleteJob}
-            onEditJob={openFormForEdit}
-            onUpdateJob={handleUpdateJob}
-          />
-        ) : activeTab === 'schedule' ? (
-          <SchedulePage jobs={jobs} />
-        ) : activeTab === 'insights' ? (
-          <InsightsPage jobs={jobs} />
         ) : (
-          <JobsPage onSaveJob={handleSaveFromSearch} />
+          <Suspense fallback={
+            <div className="main-content empty-state empty-state--min-h-50" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Loader2 className="spinner" size={40} color="var(--primary)" />
+            </div>
+          }>
+            {activeTab === 'tracker' ? (
+              <TrackerPage
+                jobs={jobs}
+                onAddClick={openFormForNew}
+                onDeleteJob={handleDeleteJob}
+                onEditJob={openFormForEdit}
+                onUpdateJob={handleUpdateJob}
+              />
+            ) : activeTab === 'schedule' ? (
+              <SchedulePage jobs={jobs} />
+            ) : activeTab === 'insights' ? (
+              <InsightsPage jobs={jobs} />
+            ) : (
+              <JobsPage onSaveJob={handleSaveFromSearch} />
+            )}
+          </Suspense>
         )}
       </main>
 

@@ -15,9 +15,9 @@ interface KanbanColumnProps {
 export const KanbanColumn = memo(({ id, title, jobs, onDeleteJob, onEditJob, onViewJob }: KanbanColumnProps) => {
   return (
     <div className={`kanban-column kanban-column--${id}`}>
-      <div className="kanban-column-header">
-        <h3 className="kanban-column-title">{title}</h3>
-        <span className="kanban-column-count">{jobs.length}</span>
+      <div className="kanban-column__header">
+        <h3 className="kanban-column__title">{title}</h3>
+        <span className="kanban-column__count">{jobs.length}</span>
       </div>
 
       <Droppable droppableId={id}>

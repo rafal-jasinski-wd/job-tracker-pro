@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useOptimistic, startTransition } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import type { DropResult } from '@hello-pangea/dnd';
 import type { Job } from '../types/job';
@@ -20,6 +20,11 @@ const COLUMNS: { id: Job['status']; title: string }[] = [
 ];
 
 export const KanbanBoard = memo(({ jobs, onUpdateJob, onDeleteJob, onEditJob, onViewJob }: KanbanBoardProps) => {
+  const [optimisticJobs, setOptimisticJobs] = useOptimistic<Job[], Job>(
+    jobs,
+    (state, updatedJob) => state.map(j => j.id === updatedJob.id ? updatedJob : j)
+  );
+
   const onDragEnd = useCallback((result: DropResult) => {
     const { destination, source, draggableId } = result;
 
@@ -32,9 +37,15 @@ export const KanbanBoard = memo(({ jobs, onUpdateJob, onDeleteJob, onEditJob, on
 
     const newStatus = destination.droppableId as Job['status'];
     if (draggedJob.status !== newStatus) {
-      onUpdateJob({ ...draggedJob, status: newStatus });
+      const updatedJob = { ...draggedJob, status: newStatus };
+      
+      // React 19: Optimistically update the UI instantly while the API request processes
+      startTransition(() => {
+        setOptimisticJobs(updatedJob);
+        onUpdateJob(updatedJob);
+      });
     }
-  }, [jobs, onUpdateJob]);
+  }, [jobs, onUpdateJob, setOptimisticJobs]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -44,7 +55,7 @@ export const KanbanBoard = memo(({ jobs, onUpdateJob, onDeleteJob, onEditJob, on
             key={col.id}
             id={col.id}
             title={col.title}
-            jobs={jobs.filter(job => job.status === col.id)}
+            jobs={optimisticJobs.filter(job => job.status === col.id)}
             onDeleteJob={onDeleteJob}
             onEditJob={onEditJob}
             onViewJob={onViewJob}

@@ -15,7 +15,7 @@ export const JobItem = memo<JobItemProps>(({ job, onDeleteJob, onEditJob, onView
     <div className="card">
       <div className="ji-header">
         <h3 className="ji-title">{job.position}</h3>
-        <span className={`badge badge--no-shrink ${job.status}`}>
+        <span className={`badge badge--no-shrink badge--${job.status}`}>
           {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
         </span>
       </div>
