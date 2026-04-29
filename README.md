@@ -20,6 +20,20 @@ JobTrackr Pro has undergone a rigorous **Zero-Trust Security & Accessibility Aud
 - **XSS Protected:** All user-generated content and AI outputs are strictly sanitized using `dompurify`.
 - **Zero Tracking:** 100% GDPR compliant. No marketing trackers, cookies, or hidden analytics scripts.
 
+## 💡 Skills Demonstrated
+
+This project showcases a wide variety of modern web development skills and best practices:
+
+- **Frontend Engineering:** React 19, TypeScript, Semantic HTML5, and advanced CSS3.
+- **State Management & Architecture:** Building robust Single Page Applications (SPAs) with complex component-driven architecture.
+- **API Design & Integration:** Serverless functions (Netlify), third-party REST API integration (Jooble), and AI implementation (Groq LLM).
+- **Security & Compliance:** Zero-trust architecture, XSS prevention (DOMPurify), zero hardcoded secrets, and GDPR compliance.
+- **UI/UX & Styling:** BEM-inspired CSS architecture, responsive design, dark/light mode implementation, and drag-and-drop interfaces.
+- **Accessibility (a11y):** WCAG 2.2 and EAA compliance, semantic ARIA labels, and full keyboard navigation support.
+- **Backend as a Service (BaaS):** Firebase Authentication and Firestore real-time database management.
+- **Data Visualization:** Creating interactive charts and analytics dashboards using Recharts.
+- **Build Tools & Workflow:** Vite, ESLint, TypeScript compilation, and deployment pipelines.
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** React 19, TypeScript, Vite
