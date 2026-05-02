@@ -23,6 +23,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -31,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (!auth) {
-      setLoading(false);
+      setLoading(false); // eslint-disable-line react-hooks/set-state-in-effect -- initialization when Firebase is unavailable
       return;
     }
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

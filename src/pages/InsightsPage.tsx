@@ -81,23 +81,23 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
   }
 
   return (
-    <div className="main-content" style={{ animation: 'fadeIn 0.3s ease', padding: '1rem' }}>
+    <div className="main-content insights-page">
       
       <div className="insights-metrics-grid">
         {metrics.map((metric, i) => (
-          <div key={i} className="card" style={{ padding: '1.5rem', textAlign: 'center', borderTop: '2px solid var(--primary)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{metric.label}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{metric.value}</div>
+          <div key={i} className="card insights-metric-card">
+            <div className="insights-metric-label">{metric.label}</div>
+            <div className="insights-metric-value">{metric.value}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+      <div className="insights-charts-grid">
         
         {/* Status Funnel Pie Chart */}
-        <div className="card" style={{ padding: '1rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
-          <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', textAlign: 'center' }}>Application Funnel Breakdown</h2>
-          <div style={{ flex: 1 }}>
+        <div className="card insights-chart-card">
+          <h2 className="insights-chart-title">Application Funnel Breakdown</h2>
+          <div className="insights-chart-body">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -125,9 +125,9 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
         </div>
 
         {/* 14 Day Velocity Bar Chart */}
-        <div className="card" style={{ padding: '1rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
-          <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', textAlign: 'center' }}>14-Day Velocity Map</h2>
-          <div style={{ flex: 1 }}>
+        <div className="card insights-chart-card">
+          <h2 className="insights-chart-title">14-Day Velocity Map</h2>
+          <div className="insights-chart-body">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={velocityData} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -147,3 +147,4 @@ export const InsightsPage = ({ jobs }: InsightsProps) => {
     </div>
   );
 };
+

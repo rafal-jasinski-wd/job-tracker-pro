@@ -2,6 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { X, Building2, MapPinned, Calendar, ExternalLink } from 'lucide-react';
 import { isSafeUrl } from '../utils/urlUtils';
+import { generateMockInterview } from '../services/aiApi';
+import ReactMarkdown from 'react-markdown';
+import { Sparkles, Loader2 } from 'lucide-react';
+import { ResumeVault } from './ResumeVault';
+import { CopyButton } from './CopyButton';
+import { InterviewScheduler } from './InterviewScheduler';
 
 export interface JobDetailData {
   title: string;
@@ -24,11 +30,6 @@ interface JobDetailModalProps {
   onClose: () => void;
   onUpdateJob?: (job: Partial<JobDetailData>) => void;
 }
-
-import { generateMockInterview } from '../services/aiApi';
-import ReactMarkdown from 'react-markdown';
-import { Sparkles, Loader2, Copy, Check } from 'lucide-react';
-import { ResumeVault } from './ResumeVault';
 
 export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -179,20 +180,19 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
             />
           )}
 
-          <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h4 className="modal-section-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
+          <div className="modal-section modal-section--bordered">
+            <div className="modal-ai-header">
+              <h4 className="modal-section-title modal-section-title--icon modal-section-title--primary">
                 <Sparkles size={18} /> AI Interview Prep
               </h4>
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <div className="modal-ai-actions">
                 {localAiText && (
                   <>
                     <CopyButton text={localAiText} />
                     <button 
                       onClick={handleGenerateAI} 
                       disabled={isGeneratingAI}
-                      className="btn btn--ghost" 
-                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                      className="btn btn--ghost modal-ai-action-btn" 
                       title="Generate new questions"
                     >
                       {isGeneratingAI ? <Loader2 size={16} className="spinner" /> : 'Regenerate'}
@@ -203,8 +203,7 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
                   <button 
                     onClick={handleGenerateAI} 
                     disabled={isGeneratingAI}
-                    className="btn" 
-                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                    className="btn modal-ai-action-btn" 
                   >
                     {isGeneratingAI ? <Loader2 size={16} className="spinner" /> : 'Generate Mock Interview'}
                   </button>
@@ -213,19 +212,19 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
             </div>
 
             {aiError && (
-              <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem' }}>{aiError}</div>
+              <div className="modal-ai-error">{aiError}</div>
             )}
 
             {localAiText && (
-              <div className="modal-content-box" style={{ background: 'color-mix(in srgb, var(--primary) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--primary) 20%, transparent)' }}>
+              <div className="modal-content-box modal-content-box--ai">
                 <ReactMarkdown>{localAiText}</ReactMarkdown>
               </div>
             )}
             {isGeneratingAI && !localAiText && (
-               <div className="modal-content-box" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                 <div className="skeleton-text" style={{ width: '100%', height: '14px', background: 'var(--border)', borderRadius: '4px', animation: 'pulse 1.5s infinite' }} />
-                 <div className="skeleton-text" style={{ width: '90%', height: '14px', background: 'var(--border)', borderRadius: '4px', animation: 'pulse 1.5s infinite 0.2s' }} />
-                 <div className="skeleton-text" style={{ width: '80%', height: '14px', background: 'var(--border)', borderRadius: '4px', animation: 'pulse 1.5s infinite 0.4s' }} />
+               <div className="modal-content-box modal-skeleton-wrap">
+                 <div className="skeleton-text skeleton-line skeleton-line--full" />
+                 <div className="skeleton-text skeleton-line skeleton-line--90" />
+                 <div className="skeleton-text skeleton-line skeleton-line--80" />
                </div>
             )}
           </div>
@@ -241,90 +240,6 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
                 View Original Posting <ExternalLink size={16} />
               </a>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const CopyButton = ({ text }: { text: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <button
-      onClick={handleCopy}
-      className={`btn ${copied ? 'btn--success' : 'btn--ghost'}`}
-      style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-      title="Copy to clipboard"
-    >
-      {copied ? <Check size={14} /> : <Copy size={14} />}
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
-  );
-};
-
-const InterviewScheduler = ({ initialDate, onSave }: { initialDate?: string, onSave: (date: string | undefined) => void }) => {
-  const [tempDate, setTempDate] = useState(initialDate || '');
-  const [isSaved, setIsSaved] = useState(true);
-
-  // Sync with prop changes
-  useEffect(() => {
-    setTempDate(initialDate || '');
-    setIsSaved(true);
-  }, [initialDate]);
-
-  const handleUpdate = () => {
-    onSave(tempDate || undefined);
-    setIsSaved(true);
-  };
-
-  const handleChange = (val: string) => {
-    setTempDate(val);
-    setIsSaved(val === (initialDate || ''));
-  };
-
-  return (
-    <div className="modal-section" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-      <h4 className="modal-section-title" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <Calendar size={18} /> Schedule Interview
-      </h4>
-      <div className="modal-content-box" style={{ padding: '1rem', display: 'flex', alignItems: 'flex-end', gap: '0.75rem' }}>
-        <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ marginBottom: '0.4rem', display: 'block' }}>Date & Time</label>
-          <input
-            type="datetime-local"
-            className="form-input"
-            value={tempDate ? tempDate.slice(0, 16) : ''}
-            onChange={(e) => handleChange(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button 
-            onClick={handleUpdate}
-            disabled={isSaved}
-            className={`btn ${isSaved ? 'btn--ghost' : ''}`}
-            style={{ minWidth: '100px' }}
-          >
-            {isSaved ? <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Check size={16} /> Saved</span> : 'Set Date'}
-          </button>
-          {tempDate && (
-            <button 
-              onClick={() => { setTempDate(''); onSave(undefined); }}
-              className="btn btn--ghost"
-              style={{ color: '#ef4444', padding: '0.6rem' }}
-              title="Clear Schedule"
-            >
-              <X size={16} />
-            </button>
           )}
         </div>
       </div>

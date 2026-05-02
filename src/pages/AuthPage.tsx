@@ -56,32 +56,32 @@ export const AuthPage = () => {
   };
 
   return (
-    <div className="app-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '2rem' }}>
+    <div className="app-container auth-container">
       
-      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-        <img src="/jobtracker-logo.webp" alt="Jobtrackr Logo" style={{ width: '60px', marginBottom: '1rem', mixBlendMode: 'screen' }} />
-        <h1 style={{ fontSize: '2rem', margin: 0 }}>
+      <div className="auth-brand">
+        <img src="/jobtracker-logo.webp" alt="Jobtrackr Logo" className="auth-brand-logo" />
+        <h1 className="auth-brand-title">
           {view === 'signin' ? 'Welcome Back' : view === 'register' ? 'Create Account' : 'Reset Password'}
         </h1>
-        <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+        <p className="auth-brand-subtitle">
           {view === 'signin' ? 'Sign in to manage your applications' : view === 'register' ? 'Start tracking your applications seamlessly' : 'We will send you a link to reset your password'}
         </p>
       </div>
 
-      <div className="card" style={{ width: '100%', maxWidth: '400px', padding: '2rem' }}>
+      <div className="card auth-card">
         {error && (
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, #ef4444 15%, transparent)', color: '#ef4444', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #ef4444' }}>
+          <div className="auth-error">
             {error}
           </div>
         )}
         
         {message && (
-          <div style={{ padding: '0.75rem', backgroundColor: 'color-mix(in srgb, #22c55e 15%, transparent)', color: '#22c55e', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #22c55e' }}>
+          <div className="auth-success">
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <form onSubmit={handleSubmit} className="auth-form">
           <div>
             <label className="form-label">Email</label>
             <input 
@@ -96,10 +96,10 @@ export const AuthPage = () => {
           
           {view !== 'forgot' && (
             <div>
-              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <label className="form-label auth-label-row">
                 Password
                 {view === 'signin' && (
-                  <button type="button" onClick={() => { setView('forgot'); setError(''); setMessage(''); }} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}>
+                  <button type="button" onClick={() => { setView('forgot'); setError(''); setMessage(''); }} className="auth-link-btn auth-link-btn--small">
                     Forgot password?
                   </button>
                 )}
@@ -116,24 +116,23 @@ export const AuthPage = () => {
             </div>
           )}
 
-          <button type="submit" className="btn" disabled={loading} style={{ marginTop: '0.5rem' }}>
+          <button type="submit" className="btn auth-submit-btn" disabled={loading}>
             {loading ? 'Processing...' : view === 'signin' ? 'Sign In' : view === 'register' ? 'Register' : 'Send Reset Link'}
           </button>
         </form>
 
         {view !== 'forgot' && (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', margin: '1.5rem 0', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border)' }} />
-              <span style={{ padding: '0 1rem' }}>OR</span>
-              <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border)' }} />
+            <div className="auth-divider">
+              <div className="auth-divider-line" />
+              <span className="auth-divider-text">OR</span>
+              <div className="auth-divider-line" />
             </div>
 
             <button 
               type="button"
               onClick={handleGoogleLogin}
-              className="btn btn--ghost"
-              style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+              className="btn btn--ghost auth-google-btn"
             >
               Sign in with Google
             </button>
@@ -141,19 +140,19 @@ export const AuthPage = () => {
         )}
 
 
-        <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        <div className="auth-footer">
           {view === 'signin' ? (
             <>
               Don't have an account?{' '}
-              <button type="button" onClick={() => { setView('register'); setError(''); }} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Create one</button>
+              <button type="button" onClick={() => { setView('register'); setError(''); }} className="auth-link-btn">Create one</button>
             </>
           ) : view === 'register' ? (
             <>
               Already have an account?{' '}
-              <button type="button" onClick={() => { setView('signin'); setError(''); }} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Sign in</button>
+              <button type="button" onClick={() => { setView('signin'); setError(''); }} className="auth-link-btn">Sign in</button>
             </>
           ) : (
-            <button type="button" onClick={() => { setView('signin'); setError(''); setMessage(''); }} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>
+            <button type="button" onClick={() => { setView('signin'); setError(''); setMessage(''); }} className="auth-link-btn">
               Back to Sign in
             </button>
           )}

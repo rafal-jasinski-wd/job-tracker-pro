@@ -3,7 +3,7 @@
  * The API key lives only in Netlify environment variables — never in the browser.
  */
 
-const JOOBLE_API_KEY = process.env.VITE_JOOBLE_API_KEY || '';
+const JOOBLE_API_KEY = process.env.JOOBLE_API_KEY || '';
 const JOOBLE_BASE_URL = 'https://jooble.org/api';
 // Set ALLOWED_ORIGIN in Netlify dashboard to your production domain.
 // Leave unset in dev to allow any origin.

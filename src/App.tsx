@@ -7,6 +7,7 @@ import type { Job } from './types/job';
 import { useFirestoreJobs } from './hooks/useFirestoreJobs';
 import { useAuth } from './contexts/AuthContext';
 import { useTheme } from './hooks/useTheme';
+import { useHashRoute } from './hooks/useHashRoute';
 import type { JoobleJob } from './services/joobleApi';
 import { mapApiJobToJob } from './utils/mappers';
 import { Footer } from './components/Footer';
@@ -23,7 +24,7 @@ const SchedulePage = lazy(() => import('./pages/SchedulePage').then(module => ({
 
 function App() {
   const { user, loading: authLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'tracker' | 'jobs' | 'schedule' | 'insights'>('tracker');
+  const [activeTab, setActiveTab] = useHashRoute();
   const [jobs, setJobs, jobsLoading] = useFirestoreJobs();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);

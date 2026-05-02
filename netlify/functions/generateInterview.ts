@@ -27,6 +27,7 @@ interface GroqResponse {
 function sanitizeInput(value: string | undefined, maxLength: number): string {
   if (!value) return '';
   // Strip null bytes and other control characters except newlines/tabs
+  // eslint-disable-next-line no-control-regex
   const cleaned = value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
   return cleaned.slice(0, maxLength).trim();
 }

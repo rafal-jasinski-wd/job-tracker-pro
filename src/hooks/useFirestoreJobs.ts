@@ -4,6 +4,17 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { Job } from '../types/job';
 
+/** Shallow key-by-key comparison for flat objects. Faster than JSON.stringify. */
+function shallowEqual(a: Job, b: Job): boolean {
+  const keysA = Object.keys(a) as (keyof Job)[];
+  const keysB = Object.keys(b) as (keyof Job)[];
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (a[key] !== b[key]) return false;
+  }
+  return true;
+}
+
 export function useFirestoreJobs() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -12,7 +23,7 @@ export function useFirestoreJobs() {
   // 1. Setup real-time listener to Firestore
   useEffect(() => {
     if (!user) {
-      setJobs([]);
+      setJobs([]); // eslint-disable-line react-hooks/set-state-in-effect -- clear state on logout
       setLoading(false);
       return;
     }
@@ -113,10 +124,10 @@ export function useFirestoreJobs() {
       }
     }
 
-    // Find Additions or Updates
+    // Find Additions or Updates (shallow compare — Job is a flat interface, no nested objects)
     for (const [id, job] of nextMap.entries()) {
       const current = currentMap.get(id);
-      if (!current || JSON.stringify(current) !== JSON.stringify(job)) {
+      if (!current || !shallowEqual(current, job)) {
            // Firestore throws an error if properties are undefined. Strip them out.
            const cleanJob = Object.fromEntries(Object.entries(job).filter(([, v]) => v !== undefined));
            batch.set(doc(db, `users/${user.uid}/jobs`, id), cleanJob);

@@ -5,15 +5,19 @@ import './components.css'
 import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
 
+import { ErrorBoundary } from './components/ErrorBoundary'
+
 const rootElement = document.getElementById('root');
 
 if (rootElement) {
   try {
     createRoot(rootElement).render(
       <StrictMode>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ErrorBoundary>
       </StrictMode>,
     );
   } catch (error) {

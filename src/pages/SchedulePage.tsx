@@ -65,58 +65,57 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
   };
 
+  const isToday = (day: number) =>
+    day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+
   return (
     <div className="main-content">
       <h1 className="page-title">Interview Schedule</h1>
       <p className="page-subtitle">Manage your upcoming interviews and set reminders for preparation.</p>
 
-      <div className="schedule-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '2rem', marginTop: '2rem' }}>
+      <div className="schedule-layout">
         
         {/* Left Column: Calendar View */}
-        <section className="card" style={{ padding: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <section className="card schedule-calendar-card">
+          <div className="schedule-cal-header">
+            <h2 className="schedule-cal-title">
               <CalendarIcon size={20} className="text-secondary" />
               {monthName} {year}
             </h2>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button onClick={prevMonth} className="btn btn--ghost" style={{ padding: '0.4rem' }}><ChevronLeft size={20} /></button>
-              <button onClick={() => setCurrentDate(new Date())} className="btn btn--ghost" style={{ fontSize: '0.85rem' }}>Today</button>
-              <button onClick={nextMonth} className="btn btn--ghost" style={{ padding: '0.4rem' }}><ChevronRight size={20} /></button>
+            <div className="schedule-cal-nav">
+              <button onClick={prevMonth} className="btn btn--ghost schedule-cal-nav-btn"><ChevronLeft size={20} /></button>
+              <button onClick={() => setCurrentDate(new Date())} className="btn btn--ghost schedule-cal-today-btn">Today</button>
+              <button onClick={nextMonth} className="btn btn--ghost schedule-cal-nav-btn"><ChevronRight size={20} /></button>
             </div>
           </div>
 
-          <div className="calendar-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', 
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-            overflow: 'hidden'
-          }}>
+          <div className="calendar-grid">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-              <div key={d} style={{ padding: '0.75rem', textAlign: 'center', backgroundColor: 'var(--bg-accent)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
+              <div key={d} className="calendar-day-header">
                 {d}
               </div>
             ))}
             {calendarDays.map((d, index) => (
-              <div key={index} className="calendar-cell" style={{ 
-                minWidth: 0,
-                padding: '0.5rem', 
-                borderRight: (index + 1) % 7 === 0 ? 'none' : '1px solid var(--border)',
-                borderBottom: '1px solid var(--border)',
-                backgroundColor: !d ? 'var(--bg-dim)' : 'transparent',
-                position: 'relative'
-              }}>
+              <div
+                key={index}
+                className={`calendar-cell ${!d ? 'calendar-cell--empty' : ''}`}
+                style={{
+                  minWidth: 0,
+                  padding: '0.5rem',
+                  borderRight: (index + 1) % 7 === 0 ? 'none' : '1px solid var(--border)',
+                  borderBottom: '1px solid var(--border)',
+                  position: 'relative'
+                }}
+              >
                 {d && (
                   <>
-                    <span style={{ 
-                      fontSize: '0.85rem', 
-                      fontWeight: 500, 
-                      color: d.day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear() ? 'var(--primary)' : 'inherit'
-                    }}>
+                    <span 
+                      className={`calendar-day-number ${isToday(d.day) ? 'calendar-day-number--today' : ''}`}
+                      aria-label={`${monthName} ${d.day}, ${year}`}
+                    >
                       {d.day}
                     </span>
-                    <div style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <div className="calendar-events">
                       {d.jobs.map(job => (
                         <div key={job.id} className="calendar-event" title={`${job.position} at ${job.company}`}>
                           <span className="event-text">{formatInterviewTime(job.interviewDate!)} {job.company}</span>
@@ -133,31 +132,31 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
 
         {/* Right Column: Upcoming Sidebar */}
         <section>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <div className="schedule-sidebar-header">
             <Bell size={18} className="text-secondary" />
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Upcoming Interviews</h3>
+            <h3 className="schedule-sidebar-title">Upcoming Interviews</h3>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="schedule-sidebar-list">
             {upcomingInterviews.length === 0 ? (
-              <div className="card" style={{ padding: '2rem', textAlign: 'center', backgroundColor: 'var(--bg-accent)' }}>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>No interviews scheduled.</p>
+              <div className="card schedule-empty-card">
+                <p className="schedule-empty-text">No interviews scheduled.</p>
               </div>
             ) : (
               upcomingInterviews.map(job => (
-                <div key={job.id} className="card" style={{ padding: '1rem', borderLeft: '4px solid var(--primary)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                    <h4 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0 }}>{job.position}</h4>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)', backgroundColor: 'rgba(56, 189, 248, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                <div key={job.id} className="card schedule-interview-card">
+                  <div className="schedule-interview-top">
+                    <h4 className="schedule-interview-position">{job.position}</h4>
+                    <span className="schedule-interview-date-badge">
                       {formatInterviewDate(job.interviewDate!)}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  <div className="schedule-interview-details">
+                    <div className="schedule-interview-detail">
                       <Building2 size={13} />
                       <span>{job.company}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    <div className="schedule-interview-detail">
                       <Clock size={13} />
                       <span>{formatInterviewTime(job.interviewDate!)}</span>
                     </div>

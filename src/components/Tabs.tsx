@@ -36,7 +36,7 @@ export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
   };
 
   return (
-    <div className="nav-tabs tabs-inner" ref={tabsRef}>
+    <nav className="nav-tabs tabs-inner" ref={tabsRef} aria-label="Main navigation">
       <div className="mobile-menu-toggle">
         <button 
           className="btn btn--ghost mobile-toggle-btn" 
@@ -54,26 +54,34 @@ export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
         </button>
       </div>
 
-      <div className={`tabs-list ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+      <div className={`tabs-list ${isMobileMenuOpen ? 'mobile-open' : ''}`} role="tablist" aria-label="Application sections">
         <button
+          role="tab"
+          aria-selected={activeTab === 'tracker'}
           className={`tab-btn ${activeTab === 'tracker' ? 'active' : ''}`}
           onClick={() => handleTabClick('tracker')}
         >
           My Tracker
         </button>
         <button
+          role="tab"
+          aria-selected={activeTab === 'jobs'}
           className={`tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
           onClick={() => handleTabClick('jobs')}
         >
           Find Jobs
         </button>
         <button
+          role="tab"
+          aria-selected={activeTab === 'schedule'}
           className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
           onClick={() => handleTabClick('schedule')}
         >
           Schedule
         </button>
         <button
+          role="tab"
+          aria-selected={activeTab === 'insights'}
           className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}
           onClick={() => handleTabClick('insights')}
         >
@@ -102,6 +110,6 @@ export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
           </div>
         )}
       </div>
-    </div>
+    </nav>
   );
 };

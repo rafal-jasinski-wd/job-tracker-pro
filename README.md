@@ -75,9 +75,9 @@ This project showcases a wide variety of modern web development skills and best 
    VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
    VITE_FIREBASE_APP_ID=your_app_id
 
-   # For local Netlify function development:
+   # Server-only keys (no VITE_ prefix — never exposed to browser):
    GROQ_API_KEY=your_groq_api_key
-   VITE_JOOBLE_API_KEY=your_jooble_api_key
+   JOOBLE_API_KEY=your_jooble_api_key
    ```
 
 4. **Run the development server (with Netlify CLI to test serverless functions locally):**

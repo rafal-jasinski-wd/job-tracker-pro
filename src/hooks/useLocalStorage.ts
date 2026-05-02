@@ -1,5 +1,14 @@
 import { useState, useCallback } from 'react';
 
+/**
+ * Generic hook for persisting state in localStorage.
+ *
+ * Currently used by:
+ *  - `useTheme` — persists the user's light/dark/system preference.
+ *
+ * Kept as a reusable utility for any future feature that needs
+ * client-side persistence outside of Firestore.
+ */
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {

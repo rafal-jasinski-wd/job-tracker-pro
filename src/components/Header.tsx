@@ -23,10 +23,10 @@ export const Header = memo(({ theme, onThemeChange }: HeaderProps) => {
 
   return (
     <header className="header">
-      <div className="logo">
-        <img src="/jobtracker-logo.webp" alt="JobTrackr Pro Logo" className="header-logo" />
+      <h1 className="logo">
+        <img src="/jobtracker-logo.webp" alt="" className="header-logo" />
         <span>JobTrackr Pro</span>
-      </div>
+      </h1>
       <div className="header-actions">
         <button onClick={toggleTheme} className="theme-btn" title={`Theme: ${theme}`}>
           {getThemeIcon()}

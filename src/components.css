@@ -1154,11 +1154,6 @@ textarea.form-input {
 .calendar-grid > div:nth-last-child(-n+7) {
   border-bottom: none;
 }
-@media (max-width: 1024px) {
-  .schedule-layout {
-    grid-template-columns: 1fr !important;
-  }
-}
 @media (max-width: 850px) {
   .calendar-cell {
     min-height: 55px;
@@ -1179,5 +1174,432 @@ textarea.form-input {
   }
   .event-icon {
     display: flex;
+  }
+}
+
+/* ── Insights Page ───────────────────────────────────────── */
+.insights-page {
+  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+}
+
+.insights-metric-card {
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 2px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.insights-metric-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.insights-metric-value {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.insights-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.insights-chart-card {
+  padding: 1rem;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.insights-chart-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.insights-chart-body {
+  flex: 1;
+}
+
+/* ── Modal AI Section ────────────────────────────────────── */
+.modal-section--bordered {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.modal-section-title--icon {
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-section-title--primary {
+  color: var(--primary);
+}
+
+.modal-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.modal-ai-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.modal-ai-action-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.modal-ai-error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content-box--ai {
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.modal-skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-line {
+  height: 14px;
+  animation: pulse 1.5s infinite;
+}
+
+.skeleton-line--full { width: 100%; }
+.skeleton-line--90 { width: 90%; animation-delay: 0.2s; }
+.skeleton-line--80 { width: 80%; animation-delay: 0.4s; }
+
+/* ── InterviewScheduler ──────────────────────────────────── */
+.scheduler-body {
+  padding: 1rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.scheduler-input-wrap {
+  flex: 1;
+}
+
+.scheduler-label {
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.scheduler-input {
+  width: 100%;
+}
+
+.scheduler-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scheduler-save-btn {
+  min-width: 100px;
+}
+
+.scheduler-saved-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.scheduler-clear-btn {
+  color: #ef4444;
+  padding: 0.6rem;
+}
+
+/* ── Schedule Page ───────────────────────────────────────── */
+.schedule-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.schedule-calendar-card {
+  padding: 10px;
+}
+
+.schedule-cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.schedule-cal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.schedule-cal-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.schedule-cal-nav-btn {
+  padding: 0.4rem;
+}
+
+.schedule-cal-today-btn {
+  font-size: 0.85rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.calendar-day-header {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-cell--empty {
+  background-color: color-mix(in srgb, var(--text-muted) 5%, transparent);
+}
+
+.calendar-day-number {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.calendar-day-number--today {
+  color: var(--primary);
+}
+
+.calendar-events {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Sidebar */
+.schedule-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.schedule-sidebar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.schedule-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.schedule-empty-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.schedule-empty-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.schedule-interview-card {
+  padding: 1rem;
+  border-left: 4px solid var(--primary);
+}
+
+.schedule-interview-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.schedule-interview-position {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.schedule-interview-date-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  background-color: rgba(56, 189, 248, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.schedule-interview-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.schedule-interview-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Auth Page ───────────────────────────────────────────── */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.auth-brand {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-brand-logo {
+  width: 60px;
+  margin-bottom: 1rem;
+  mix-blend-mode: screen;
+}
+
+.auth-brand-title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.auth-brand-subtitle {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.auth-error {
+  padding: 0.75rem;
+  background-color: color-mix(in srgb, #ef4444 15%, transparent);
+  color: #ef4444;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  border: 1px solid #ef4444;
+}
+
+.auth-success {
+  padding: 0.75rem;
+  background-color: color-mix(in srgb, #22c55e 15%, transparent);
+  color: #22c55e;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  border: 1px solid #22c55e;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-label-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.auth-link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+
+.auth-link-btn--small {
+  font-size: 0.8rem;
+}
+
+.auth-submit-btn {
+  margin-top: 0.5rem;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.auth-divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border);
+}
+
+.auth-divider-text {
+  padding: 0 1rem;
+}
+
+.auth-google-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1024px) {
+  .schedule-layout {
+    grid-template-columns: 1fr;
   }
 }
