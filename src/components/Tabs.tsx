@@ -10,13 +10,14 @@ interface TabsProps {
 
 export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const { user, logout } = useAuth();
 
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (isMobileMenuOpen && tabsRef.current && !tabsRef.current.contains(event.target as Node)) {
+      if (isMobileMenuOpen && tabsRef.current && event.target instanceof Node && !tabsRef.current.contains(event.target)) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -96,8 +97,33 @@ export const Tabs = ({ activeTab, onTabChange, onAddClick }: TabsProps) => {
 
         {user && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: '0.5rem', borderLeft: '1px solid var(--border)' }}>
-            {user.photoURL && (
-              <img src={user.photoURL} alt="Profile" className="hide-on-mobile" style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border)' }} />
+            {user.photoURL && !avatarError ? (
+              <img 
+                src={user.photoURL} 
+                alt="Profile" 
+                className="hide-on-mobile" 
+                style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border)', objectFit: 'cover' }} 
+                onError={() => setAvatarError(true)}
+              />
+            ) : (
+              <div 
+                className="hide-on-mobile" 
+                style={{ 
+                  width: '28px', 
+                  height: '28px', 
+                  borderRadius: '50%', 
+                  backgroundColor: 'var(--primary)', 
+                  color: 'white', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: '0.85rem', 
+                  fontWeight: 'bold', 
+                  border: '1px solid var(--border)'
+                }}
+              >
+                {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+              </div>
             )}
             <button 
               onClick={(e) => { e.preventDefault(); logout(); }} 

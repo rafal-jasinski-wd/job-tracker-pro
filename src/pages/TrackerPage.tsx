@@ -1,11 +1,12 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, Suspense, lazy } from 'react';
 import { Briefcase, LayoutList, LayoutGrid } from 'lucide-react';
 import type { Job } from '../types/job';
 import { JobList } from '../components/JobList';
 import { FilterBar } from '../components/FilterBar';
 import { Stats } from '../components/Stats';
-import { JobDetailModal } from '../components/JobDetailModal';
 import { KanbanBoard } from '../components/KanbanBoard';
+
+const JobDetailModal = lazy(() => import('../components/JobDetailModal').then(module => ({ default: module.JobDetailModal })));
 
 interface TrackerPageProps {
   jobs: Job[];
@@ -106,32 +107,34 @@ export const TrackerPage = ({ jobs, onAddClick, onDeleteJob, onEditJob, onUpdate
       )}
 
       {activeViewJob && (
-        <JobDetailModal
-          job={{
-            title: activeViewJob.position,
-            company: activeViewJob.company,
-            status: activeViewJob.status,
-            location: activeViewJob.location,
-            date: activeViewJob.date,
-            notes: activeViewJob.notes,
-            aiInterviewPrep: activeViewJob.aiInterviewPrep,
-            resumeUrl: activeViewJob.resumeUrl,
-            coverLetterUrl: activeViewJob.coverLetterUrl,
-            interviewDate: activeViewJob.interviewDate
-          }}
-          onClose={handleCloseModal}
-          onUpdateJob={(updatedData) => {
-            if (!activeViewJob) return;
-            onUpdateJob({
-              ...activeViewJob,
-              status: (updatedData.status as Job['status']) || activeViewJob.status,
-              aiInterviewPrep: updatedData.aiInterviewPrep,
-              resumeUrl: updatedData.resumeUrl,
-              coverLetterUrl: updatedData.coverLetterUrl,
-              interviewDate: updatedData.interviewDate
-            });
-          }}
-        />
+        <Suspense fallback={null}>
+          <JobDetailModal
+            job={{
+              title: activeViewJob.position,
+              company: activeViewJob.company,
+              status: activeViewJob.status,
+              location: activeViewJob.location,
+              date: activeViewJob.date,
+              notes: activeViewJob.notes,
+              aiInterviewPrep: activeViewJob.aiInterviewPrep,
+              resumeUrl: activeViewJob.resumeUrl,
+              coverLetterUrl: activeViewJob.coverLetterUrl,
+              interviewDate: activeViewJob.interviewDate
+            }}
+            onClose={handleCloseModal}
+            onUpdateJob={(updatedData) => {
+              if (!activeViewJob) return;
+              onUpdateJob({
+                ...activeViewJob,
+                status: updatedData.status || activeViewJob.status,
+                aiInterviewPrep: updatedData.aiInterviewPrep,
+                resumeUrl: updatedData.resumeUrl,
+                coverLetterUrl: updatedData.coverLetterUrl,
+                interviewDate: updatedData.interviewDate
+              });
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

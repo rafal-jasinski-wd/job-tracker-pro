@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import type { Theme } from '../hooks/useTheme';
+import { JobTrackerLogo } from './JobTrackerLogo';
 
 interface HeaderProps {
   theme: Theme;
@@ -24,7 +25,11 @@ export const Header = memo(({ theme, onThemeChange }: HeaderProps) => {
   return (
     <header className="header">
       <h1 className="logo">
-        <img src="/jobtracker-logo.webp" alt="" className="header-logo" />
+        <JobTrackerLogo 
+          className="header-logo" 
+          width="42"
+          height="42"
+        />
         <span>JobTrackr Pro</span>
       </h1>
       <div className="header-actions">

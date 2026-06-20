@@ -8,12 +8,13 @@ import { Sparkles, Loader2 } from 'lucide-react';
 import { ResumeVault } from './ResumeVault';
 import { CopyButton } from './CopyButton';
 import { InterviewScheduler } from './InterviewScheduler';
+import { type Job, isJobStatus } from '../types/job';
 
 export interface JobDetailData {
   title: string;
   company: string;
   location?: string;
-  status?: string;
+  status?: Job['status'];
   date: string;
   descriptionSnippet?: string;
   notes?: string;
@@ -134,7 +135,12 @@ export const JobDetailModal = ({ job, onClose, onUpdateJob }: JobDetailModalProp
               <select 
                 className={`badge badge--${job.status} modal-status-select`} 
                 value={job.status} 
-                onChange={(e) => { if (onUpdateJob) onUpdateJob({ ...job, status: e.target.value }); }}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (onUpdateJob && isJobStatus(val)) {
+                    onUpdateJob({ ...job, status: val });
+                  }
+                }}
               >
                 <option value="applied">Applied</option>
                 <option value="interview">Interview</option>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Job } from '../types/job';
+import { type Job, isJobStatus } from '../types/job';
 import { X, Calendar } from 'lucide-react';
 
 interface JobFormProps {
@@ -127,7 +127,12 @@ export const JobForm = ({ initialData, onSubmit, onCancel }: JobFormProps) => {
               <label className="form-label">Status</label>
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value as Job['status'])}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (isJobStatus(val)) {
+                    setStatus(val);
+                  }
+                }}
                 className="form-input"
               >
                 <option value="applied">Applied</option>

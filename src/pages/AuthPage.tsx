@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getAuthErrorMessage } from '../utils/authErrors';
+import { JobTrackerLogo } from '../components/JobTrackerLogo';
 
 export const AuthPage = () => {
   const { loginWithGoogle, loginWithEmail, registerWithEmail, resetPassword } = useAuth();
@@ -12,15 +14,7 @@ export const AuthPage = () => {
   const [message, setMessage] = useState('');
 
   const handleError = (err: unknown) => {
-    let msg = err instanceof Error ? err.message : 'An error occurred';
-    if (msg.includes('auth/invalid-credential')) msg = 'Invalid email or password.';
-    if (msg.includes('auth/email-already-in-use')) msg = 'This email is already registered.';
-    if (msg.includes('auth/weak-password')) msg = 'Password should be at least 6 characters.';
-    if (msg.includes('auth/user-not-found')) msg = 'No user found with this email.';
-    if (msg.includes('auth/unauthorized-domain')) {
-      msg = 'This domain is not authorized in your Firebase Console. Please add your Netlify URL to the "Authorized Domains" list.';
-    }
-    setError(msg);
+    setError(getAuthErrorMessage(err));
   };
 
   const handleGoogleLogin = async () => {
@@ -59,7 +53,11 @@ export const AuthPage = () => {
     <div className="app-container auth-container">
       
       <div className="auth-brand">
-        <img src="/jobtracker-logo.webp" alt="Jobtrackr Logo" className="auth-brand-logo" />
+        <JobTrackerLogo 
+          className="auth-brand-logo" 
+          width="60"
+          height="60"
+        />
         <h1 className="auth-brand-title">
           {view === 'signin' ? 'Welcome Back' : view === 'register' ? 'Create Account' : 'Reset Password'}
         </h1>

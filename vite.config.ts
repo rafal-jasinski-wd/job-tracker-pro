@@ -31,6 +31,22 @@ export default defineConfig(({ mode }) => {
             // Recharts + its d3 dependencies
             if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-')) return 'vendor-recharts';
             if (id.includes('node_modules/@hello-pangea/dnd')) return 'vendor-dnd';
+            // Split off heavy security sanitizer and markdown parsers
+            if (id.includes('node_modules/dompurify')) return 'vendor-dompurify';
+            if (
+              id.includes('node_modules/react-markdown') ||
+              id.includes('node_modules/remark') ||
+              id.includes('node_modules/unified') ||
+              id.includes('node_modules/mdast') ||
+              id.includes('node_modules/micromark') ||
+              id.includes('node_modules/vfile') ||
+              id.includes('node_modules/unist') ||
+              id.includes('node_modules/decode-named-character-reference') ||
+              id.includes('node_modules/property-information') ||
+              id.includes('node_modules/hast')
+            ) {
+              return 'vendor-markdown';
+            }
           }
         }
       }

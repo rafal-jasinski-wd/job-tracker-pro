@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Search, Filter } from 'lucide-react';
-import type { Job } from '../types/job';
+import { type Job, isStatusFilter } from '../types/job';
 
 interface FilterBarProps {
   searchQuery: string;
@@ -28,7 +28,12 @@ export const FilterBar = memo(({ searchQuery, onSearchChange, statusFilter, onSt
         <Filter size={18} color="var(--text-muted)" />
         <select
           value={statusFilter}
-          onChange={(e) => onStatusFilterChange(e.target.value as Job['status'] | 'all')}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (isStatusFilter(val)) {
+              onStatusFilterChange(val);
+            }
+          }}
           className="filter-select"
         >
           <option value="all">All Statuses</option>

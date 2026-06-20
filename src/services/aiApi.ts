@@ -1,5 +1,9 @@
 import type { JobDetailData } from '../components/JobDetailModal';
 
+interface GenerateInterviewResponse {
+  result: string;
+}
+
 export const generateMockInterview = async (job: JobDetailData): Promise<string> => {
   try {
     const response = await fetch('/.netlify/functions/generateInterview', {
@@ -24,7 +28,7 @@ export const generateMockInterview = async (job: JobDetailData): Promise<string>
       throw new Error(detailedMsg);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as GenerateInterviewResponse;
     return data.result;
   } catch (error) {
     console.error("AI Proxy Service Error:", error);

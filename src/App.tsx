@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Tabs } from './components/Tabs';
-import { JobForm } from './components/JobForm';
 import { Toast } from './components/Toast';
 import type { Job } from './types/job';
 import { useFirestoreJobs } from './hooks/useFirestoreJobs';
@@ -11,7 +10,6 @@ import { useHashRoute } from './hooks/useHashRoute';
 import type { JoobleJob } from './services/joobleApi';
 import { mapApiJobToJob } from './utils/mappers';
 import { Footer } from './components/Footer';
-import { AuthPage } from './pages/AuthPage';
 
 import { Suspense, lazy } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -21,6 +19,8 @@ const TrackerPage = lazy(() => import('./pages/TrackerPage').then(module => ({ d
 const JobsPage = lazy(() => import('./pages/JobsPage').then(module => ({ default: module.JobsPage })));
 const InsightsPage = lazy(() => import('./pages/InsightsPage').then(module => ({ default: module.InsightsPage })));
 const SchedulePage = lazy(() => import('./pages/SchedulePage').then(module => ({ default: module.SchedulePage })));
+const AuthPage = lazy(() => import('./pages/AuthPage').then(module => ({ default: module.AuthPage })));
+const JobForm = lazy(() => import('./components/JobForm').then(module => ({ default: module.JobForm })));
 
 function App() {
   const { user, loading: authLoading } = useAuth();
@@ -124,7 +124,15 @@ function App() {
   }
 
   if (!user) {
-    return <AuthPage />;
+    return (
+      <Suspense fallback={
+        <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+          <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+        </div>
+      }>
+        <AuthPage />
+      </Suspense>
+    );
   }
 
   return (
@@ -168,12 +176,14 @@ function App() {
       </main>
 
       {isFormOpen && (
-        <JobForm
-          key={jobToEdit?.id || 'new'}
-          initialData={jobToEdit || undefined}
-          onSubmit={handleSaveJob}
-          onCancel={closeForm}
-        />
+        <Suspense fallback={null}>
+          <JobForm
+            key={jobToEdit?.id || 'new'}
+            initialData={jobToEdit || undefined}
+            onSubmit={handleSaveJob}
+            onCancel={closeForm}
+          />
+        </Suspense>
       )}
 
       {toastMessage && <Toast message={toastMessage} />}

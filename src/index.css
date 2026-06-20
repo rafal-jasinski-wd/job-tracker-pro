@@ -98,11 +98,8 @@ h6 {
   height: 42px;
   width: auto;
   border-radius: 10px;
-}
-
-.dark .header-logo {
-  /* Organically strips the dark background from the PNG to make it transparent */
-  mix-blend-mode: screen;
+  color: var(--primary);
+  transition: color 0.3s ease;
 }
 
 /* Navigation */

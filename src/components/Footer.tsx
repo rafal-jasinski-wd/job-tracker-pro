@@ -1,5 +1,6 @@
 // Computed once at module level — never recalculates on re-render
 const CURRENT_YEAR = new Date().getFullYear();
+import { CreatorLogo } from './CreatorLogo';
 
 export const Footer = () => {
   return (
@@ -15,11 +16,10 @@ export const Footer = () => {
         {/* Center: Created by + Logo */}
         <div className="footer-creator">
           <span className="footer-creator-text">Created by</span>
-          <img
-            src="/creator-logo.webp"
-            alt="Creator Logo"
+          <CreatorLogo
             className="footer-logo"
-            loading="lazy"
+            width="40"
+            height="40"
           />
         </div>
 
@@ -34,10 +34,12 @@ export const Footer = () => {
           >
             <img
               src="https://jooble.org/favicon.ico"
-              alt="Jooble"
+              alt="Jooble Job Search Engine"
               className="footer-api-favicon"
               loading="lazy"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              width="16"
+              height="16"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
             <span className="footer-api-name">Jooble</span>
           </a>

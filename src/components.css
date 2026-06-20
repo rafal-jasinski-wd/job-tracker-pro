@@ -441,8 +441,16 @@
 
 .footer-logo {
   width: 40px;
-  object-fit: cover;
+  height: 40px;
+  color: var(--text-muted);
+  transition: color 0.2s ease, transform 0.2s ease;
 }
+
+.footer-logo:hover {
+  color: var(--primary);
+  transform: scale(1.08);
+}
+
 
 .footer-powered {
   display: flex;
@@ -1497,9 +1505,12 @@ textarea.form-input {
 
 .auth-brand-logo {
   width: 60px;
+  height: 60px;
   margin-bottom: 1rem;
-  mix-blend-mode: screen;
+  color: var(--primary);
+  transition: color 0.3s ease;
 }
+
 
 .auth-brand-title {
   font-size: 2rem;

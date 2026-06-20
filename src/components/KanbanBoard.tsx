@@ -1,7 +1,7 @@
 import { memo, useCallback, useOptimistic, startTransition } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import type { DropResult } from '@hello-pangea/dnd';
-import type { Job } from '../types/job';
+import { type Job, isJobStatus } from '../types/job';
 import { KanbanColumn } from './KanbanColumn';
 
 interface KanbanBoardProps {
@@ -35,8 +35,8 @@ export const KanbanBoard = memo(({ jobs, onUpdateJob, onDeleteJob, onEditJob, on
     const draggedJob = jobs.find(j => j.id === draggableId);
     if (!draggedJob) return;
 
-    const newStatus = destination.droppableId as Job['status'];
-    if (draggedJob.status !== newStatus) {
+    const newStatus = destination.droppableId;
+    if (isJobStatus(newStatus) && draggedJob.status !== newStatus) {
       const updatedJob = { ...draggedJob, status: newStatus };
       
       // React 19: Optimistically update the UI instantly while the API request processes

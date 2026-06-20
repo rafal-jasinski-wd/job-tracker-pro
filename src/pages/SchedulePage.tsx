@@ -1,6 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Building2, Bell } from 'lucide-react';
 import type { Job } from '../types/job';
+import {
+  formatInterviewTime,
+  formatInterviewDate,
+  isToday,
+  generateCalendarDays
+} from '../utils/dateUtils';
 
 interface SchedulePageProps {
   jobs: Job[];
@@ -22,10 +28,6 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
       .sort((a, b) => new Date(a.interviewDate!).getTime() - new Date(b.interviewDate!).getTime());
   }, [scheduledJobs]);
 
-  // Calendar logic
-  const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
-
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -34,39 +36,8 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
   const calendarDays = useMemo(() => {
-    const totalDays = daysInMonth(year, month);
-    const startDay = firstDayOfMonth(year, month);
-    const days = [];
-
-    // Padding for previous month days
-    for (let i = 0; i < startDay; i++) {
-      days.push(null);
-    }
-
-    // Current month days
-    for (let i = 1; i <= totalDays; i++) {
-       const jobsForDay = scheduledJobs.filter(job => {
-         const jDate = new Date(job.interviewDate!);
-         return jDate.getDate() === i && jDate.getMonth() === month && jDate.getFullYear() === year;
-       });
-       days.push({ day: i, jobs: jobsForDay });
-    }
-
-    return days;
+    return generateCalendarDays(year, month, scheduledJobs);
   }, [year, month, scheduledJobs]);
-
-  const formatInterviewTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatInterviewDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-  };
-
-  const isToday = (day: number) =>
-    day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
 
   return (
     <div className="main-content">
@@ -110,7 +81,7 @@ export const SchedulePage = ({ jobs }: SchedulePageProps) => {
                 {d && (
                   <>
                     <span 
-                      className={`calendar-day-number ${isToday(d.day) ? 'calendar-day-number--today' : ''}`}
+                      className={`calendar-day-number ${isToday(d.day, month, year) ? 'calendar-day-number--today' : ''}`}
                       aria-label={`${monthName} ${d.day}, ${year}`}
                     >
                       {d.day}

@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
+import { type Tab, isTab } from '../types/job';
 
-type Tab = 'tracker' | 'jobs' | 'schedule' | 'insights';
-
-const VALID_TABS: Tab[] = ['tracker', 'jobs', 'schedule', 'insights'];
 const DEFAULT_TAB: Tab = 'tracker';
+
+const parseHash = (): Tab => {
+  const hash = window.location.hash.replace('#', '');
+  return isTab(hash) ? hash : DEFAULT_TAB;
+};
 
 /**
  * Lightweight hash-based routing hook.
@@ -18,11 +21,6 @@ const DEFAULT_TAB: Tab = 'tracker';
  * Zero external dependencies — uses only the native `hashchange` event.
  */
 export function useHashRoute(): [Tab, (tab: Tab) => void] {
-  const parseHash = (): Tab => {
-    const hash = window.location.hash.replace('#', '') as Tab;
-    return VALID_TABS.includes(hash) ? hash : DEFAULT_TAB;
-  };
-
   const [activeTab, setActiveTab] = useState<Tab>(parseHash);
 
   // Listen for browser back/forward navigation

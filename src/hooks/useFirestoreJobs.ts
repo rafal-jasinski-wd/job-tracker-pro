@@ -1,19 +1,46 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { collection, doc, query, onSnapshot, writeBatch } from 'firebase/firestore';
+import type { FirestoreDataConverter, QueryDocumentSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { Job } from '../types/job';
 
-/** Shallow key-by-key comparison for flat objects. Faster than JSON.stringify. */
+const JOB_KEYS: Array<keyof Job> = [
+  'id', 'company', 'position', 'status', 'location', 'date',
+  'notes', 'link', 'type', 'aiInterviewPrep', 'resumeUrl',
+  'coverLetterUrl', 'interviewDate'
+];
+
+/** Shallow key-by-key comparison for Job interface. Zero type casting. */
 function shallowEqual(a: Job, b: Job): boolean {
-  const keysA = Object.keys(a) as (keyof Job)[];
-  const keysB = Object.keys(b) as (keyof Job)[];
-  if (keysA.length !== keysB.length) return false;
-  for (const key of keysA) {
-    if (a[key] !== b[key]) return false;
-  }
-  return true;
+  return JOB_KEYS.every(key => a[key] === b[key]);
 }
+
+const jobConverter: FirestoreDataConverter<Job> = {
+  toFirestore(job: Job) {
+    return Object.fromEntries(
+      Object.entries(job).filter(([, v]) => v !== undefined)
+    );
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot): Job {
+    const data = snapshot.data();
+    return {
+      id: snapshot.id,
+      company: data.company || '',
+      position: data.position || '',
+      status: data.status || 'applied',
+      date: data.date || '',
+      location: data.location,
+      notes: data.notes,
+      link: data.link,
+      type: data.type,
+      aiInterviewPrep: data.aiInterviewPrep,
+      resumeUrl: data.resumeUrl,
+      coverLetterUrl: data.coverLetterUrl,
+      interviewDate: data.interviewDate
+    };
+  }
+};
 
 export function useFirestoreJobs() {
   const { user } = useAuth();
@@ -39,12 +66,13 @@ export function useFirestoreJobs() {
       return;
     }
 
-    const q = query(collection(db, `users/${user.uid}/jobs`));
+    const q = query(collection(db, `users/${user.uid}/jobs`).withConverter(jobConverter));
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedJobs: Job[] = [];
       querySnapshot.forEach((doc) => {
-        fetchedJobs.push(doc.data() as Job);
+        // doc.data() is now natively typed as Job by the converter, no cast needed!
+        fetchedJobs.push(doc.data());
       });
       // Sort by date desc (newest first)
       fetchedJobs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -80,9 +108,8 @@ export function useFirestoreJobs() {
           const batch = writeBatch(db);
           
           localJobs.forEach(job => {
-            const cleanJob = Object.fromEntries(Object.entries(job).filter(([, v]) => v !== undefined));
-            const jobRef = doc(db!, `users/${user.uid}/jobs`, job.id);
-            batch.set(jobRef, cleanJob);
+            const jobRef = doc(db!, `users/${user.uid}/jobs`, job.id).withConverter(jobConverter);
+            batch.set(jobRef, job);
           });
           
           await batch.commit();
@@ -128,9 +155,7 @@ export function useFirestoreJobs() {
     for (const [id, job] of nextMap.entries()) {
       const current = currentMap.get(id);
       if (!current || !shallowEqual(current, job)) {
-           // Firestore throws an error if properties are undefined. Strip them out.
-           const cleanJob = Object.fromEntries(Object.entries(job).filter(([, v]) => v !== undefined));
-           batch.set(doc(db, `users/${user.uid}/jobs`, id), cleanJob);
+           batch.set(doc(db, `users/${user.uid}/jobs`, id).withConverter(jobConverter), job);
       }
     }
 
