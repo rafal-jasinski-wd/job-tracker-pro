@@ -85,14 +85,27 @@ export const handler = async (event: NetlifyEvent): Promise<NetlifyResponse> => 
       body: sanitizedBody
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    let data: unknown;
+    if (contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const rawText = await response.text();
+      console.error(`[Jooble] API returned non-JSON response (HTTP ${response.status}):`, rawText);
+      return {
+        statusCode: 502,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: `Received non-JSON response from Jooble (HTTP ${response.status}).` })
+      };
+    }
 
     return {
       statusCode: response.status,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     };
-  } catch {
+  } catch (error) {
+    console.error('[Jooble] Fetch or parsing error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to contact Jooble API.' })

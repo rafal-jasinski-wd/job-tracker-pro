@@ -44,12 +44,19 @@ export const fetchJoobleJobs = async (
   });
 
   if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      throw new Error('Invalid Jooble API key. Please check your .env file.');
+    if (response.status === 404) {
+      throw new Error('Jooble Function not found. If you are testing locally, please run "netlify dev" instead of "npm run dev". If on production, wait 1 minute for functions to propagate.');
     }
-    throw new Error(`Error fetching jobs: ${response.statusText} (${response.status})`);
+    if (response.status === 401 || response.status === 403) {
+      throw new Error('Invalid Jooble API key. Please check your config.');
+    }
+    
+    // Attempt to extract serverless error message
+    const errorData = await response.json().catch(() => ({}));
+    const detailedMsg = errorData.error || `Server Error (${response.status}): Failed to fetch jobs.`;
+    throw new Error(detailedMsg);
   }
 
-  const result: JoobleResponse = await response.json();
+  const result = (await response.json()) as JoobleResponse;
   return result.jobs || [];
 };
