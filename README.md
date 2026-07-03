@@ -1,6 +1,19 @@
 # 🚀 JobTrackr Pro
 
+[![React Version](https://img.shields.io/badge/React-19.2-blue.svg?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript Version](https://img.shields.io/badge/TypeScript-5.x-blue.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite Version](https://img.shields.io/badge/Vite-8.x-64748b.svg?logo=vite&logoColor=white)](https://vite.dev)
+[![Vitest Status](https://img.shields.io/badge/Tests-28%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](https://vitest.dev)
+[![Firebase Version](https://img.shields.io/badge/Firebase-12.x-ffca28.svg?logo=firebase&logoColor=black)](https://firebase.google.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **JobTrackr Pro** is a modern, privacy-first, and highly accessible job application tracking platform. Built for the modern job seeker, it offers seamless integration with real-time job boards, AI-powered interview preparation, and robust tracking analytics to help you land your dream job faster.
+
+## 🔗 Live Demo
+
+👉 **[Launch JobTrackr Pro](https://jobtrackerpro26.netlify.app)**
+
+---
 
 ## ✨ Features
 
@@ -11,6 +24,24 @@
 - **📈 Advanced Analytics:** Visualize your job search funnel, conversion rates, and a 14-day application velocity map using beautiful Recharts.
 - **📅 Interview Scheduling:** Built-in calendar to track upcoming interviews, with dedicated visual cues and reminders.
 - **🌓 Dark/Light Mode:** First-class support for both themes built into the core CSS architecture.
+
+---
+
+## 📸 Previews
+
+### 🎞️ Video Walkthrough
+
+<video src="screenshots/jobtrackerpro-video.mp4" autoplay loop muted width="100%"></video>
+
+### 🖥️ App Screenshots
+
+![Kanban Dashboard](screenshots/jobtrackerpro1.webp)
+![List View](screenshots/jobtrackerpro2.webp)
+![AI Interview Prep](screenshots/jobtrackerpro3.webp)
+![Analytics & Insights](screenshots/jobtrackerpro4.webp)
+![Schedule & Calendar](screenshots/jobtrackerpro5.webp)
+
+---
 
 ## 🛡️ Enterprise-Grade Security & Compliance
 
