@@ -29,12 +29,6 @@
 
 ## 📸 Previews
 
-### 🎞️ Video Walkthrough
-
-<video src="screenshots/jobtrackerpro-video.mp4" autoplay loop muted width="100%"></video>
-
-### 🖥️ App Screenshots
-
 ![Kanban Dashboard](screenshots/jobtrackerpro1.webp)
 ![List View](screenshots/jobtrackerpro2.webp)
 ![AI Interview Prep](screenshots/jobtrackerpro3.webp)
